@@ -84,16 +84,16 @@
 
 ### Functional Requirements
 
-- **FR-001**: System MUST [specific capability, e.g., "allow users to create accounts"]
-- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"]  
-- **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
-- **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
-- **FR-005**: System MUST [behavior, e.g., "log all security events"]
+- **FR-001**: System MUST [specific robotics capability, e.g., "maintain kinematic stability during bipedal locomotion"]
+- **FR-002**: System MUST [sensor integration, e.g., "fuse IMU and vision data for pose estimation"]
+- **FR-003**: Robotics system MUST [real-time constraint, e.g., "execute motion planning within 10ms control loop"]
+- **FR-004**: System MUST [embodied intelligence, e.g., "adapt grasping strategy based on tactile feedback"]
+- **FR-005**: Implementation MUST [platform compliance, e.g., "deploy on ROS 2 with NVIDIA Isaac acceleration"]
 
 *Example of marking unclear requirements:*
 
-- **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
-- **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+- **FR-006**: System MUST handle sensor noise using [NEEDS CLARIFICATION: filtering method not specified - Kalman filter, particle filter, or learning-based?]
+- **FR-007**: Control system MUST achieve [NEEDS CLARIFICATION: performance metric not specified - position accuracy in mm, settling time in seconds?]
 
 ### Key Entities *(include if feature involves data)*
 
@@ -109,7 +109,7 @@
 
 ### Measurable Outcomes
 
-- **SC-001**: [Measurable metric, e.g., "Users can complete account creation in under 2 minutes"]
-- **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"]
-- **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
-- **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
+- **SC-001**: [Robotics performance metric, e.g., "Achieve 95% success rate in grasping objects of varying sizes"]
+- **SC-002**: [Real-time constraint, e.g., "Maintain control loop stability at 1kHz with <5% CPU utilization"]
+- **SC-003**: [Academic validation, e.g., "Implementation demonstrates theoretical bounds on motion planning complexity"]
+- **SC-004**: [Industry applicability, e.g., "Deploy successfully on physical humanoid platform with ROS 2 integration"]

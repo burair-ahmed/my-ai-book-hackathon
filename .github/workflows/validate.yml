@@ -1,0 +1,43 @@
+name: Validate Content
+
+on:
+  push:
+    branches: [main]
+    paths: ['docs/**', 'src/**', 'scripts/**']
+  pull_request:
+    branches: [main]
+    paths: ['docs/**', 'src/**', 'scripts/**']
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint code
+        run: npm run typecheck
+
+      - name: Validate markdown
+        run: npx markdownlint-cli docs/**/*.md --config .markdownlint.json
+
+      - name: Validate content integrity
+        run: node scripts/validate-content.js
+
+      - name: Check accessibility
+        run: |
+          npm install -g axe-cli
+          npx axe-cli http://localhost:3000 --exit || true
+
+      - name: Performance baseline
+        run: node scripts/monitor-performance.js

@@ -60,14 +60,14 @@ description: "Task list template for feature implementation"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-Examples of foundational tasks (adjust based on your project):
+Examples of foundational tasks (adjust based on robotics project):
 
-- [ ] T004 Setup database schema and migrations framework
-- [ ] T005 [P] Implement authentication/authorization framework
-- [ ] T006 [P] Setup API routing and middleware structure
-- [ ] T007 Create base models/entities that all stories depend on
-- [ ] T008 Configure error handling and logging infrastructure
-- [ ] T009 Setup environment configuration management
+- [ ] T004 Setup ROS 2 workspace and package structure
+- [ ] T005 [P] Configure NVIDIA Isaac simulation environment
+- [ ] T006 [P] Establish sensor data pipeline and message definitions
+- [ ] T007 Implement core kinematic and dynamic models
+- [ ] T008 Setup real-time control loop infrastructure
+- [ ] T009 Configure hardware abstraction layer for physical interfaces
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 

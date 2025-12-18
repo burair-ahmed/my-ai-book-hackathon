@@ -31,7 +31,35 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+### Embodied Systems Architecture
+- [ ] Content prioritizes physical embodiment over purely computational approaches
+- [ ] Sensorimotor integration is primary architectural constraint
+- [ ] System designed for physical deployment requirements
+
+### Chapter Structure Constraint
+- [ ] Feature scope fits within maximum 5-chapter book structure
+- [ ] Content enables independent study while maintaining cumulative understanding
+- [ ] Chapter boundaries respect architectural layer progression
+
+### Academic-Industrial Rigor
+- [ ] Concepts include both theoretical grounding and practical implementation
+- [ ] No oversimplification - maintains academic depth
+- [ ] Directly applicable to industry implementation
+
+### Systems-Thinking Documentation
+- [ ] Clear system boundaries, data flows, and architectural relationships defined
+- [ ] Engineering trade-offs and failure modes documented
+- [ ] Technical accuracy prioritized over readability
+
+### Platform-Specific Implementation
+- [ ] Implementation validated against ROS 2 or NVIDIA Isaac platforms
+- [ ] Hardware and software constraints of humanoid robotics considered
+- [ ] Code examples executable on standard robotics development hardware
+
+### Accessibility & Performance Standards
+- [ ] Performance includes real-time constraints of physical systems
+- [ ] Content structure supports long-form technical reading
+- [ ] Visual hierarchy optimized for technical documentation
 
 ## Project Structure
 

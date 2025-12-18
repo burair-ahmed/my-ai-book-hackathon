@@ -1,0 +1,28 @@
+{
+  "id": "chapter-05/index",
+  "title": "Chapter 5: Vision-Language-Action Systems",
+  "description": "Autonomous Humanoid Operation",
+  "source": "@site/docs/chapter-05/index.md",
+  "sourceDirName": "chapter-05",
+  "slug": "/chapter-05/",
+  "permalink": "/my-ai-book-hackathon/docs/chapter-05/",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/chapter-05/index.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {
+    "sidebar_label": "Chapter Overview",
+    "sidebar_position": 1
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "4.2 Isaac Sim Integration",
+    "permalink": "/my-ai-book-hackathon/docs/chapter-04/isaac-sim-integration"
+  },
+  "next": {
+    "title": "5.1 Multi-modal Integration",
+    "permalink": "/my-ai-book-hackathon/docs/chapter-05/multi-modal-integration"
+  }
+}

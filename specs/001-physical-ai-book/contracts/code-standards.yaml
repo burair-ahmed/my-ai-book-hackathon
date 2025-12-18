@@ -1,0 +1,168 @@
+openapi: 3.0.3
+info:
+  title: Physical AI Book Code Example Standards
+  version: 1.0.0
+  description: Contract defining standards for all code examples in the book
+
+components:
+  schemas:
+    CodeExample:
+      type: object
+      required:
+        - title
+        - platform
+        - language
+        - content
+        - requirements
+      properties:
+        title:
+          type: string
+          minLength: 10
+          maxLength: 100
+          description: Descriptive title explaining what the example demonstrates
+        platform:
+          type: string
+          enum: [ros2, isaac, simulation, general]
+          description: Target platform for execution
+        language:
+          type: string
+          enum: [python, yaml, xml, bash, cpp]
+          description: Programming language used
+        content:
+          type: string
+          minLength: 10
+          description: Complete, executable code
+        requirements:
+          type: object
+          required: [hardware, software, dependencies]
+          properties:
+            hardware:
+              type: array
+              items:
+                type: string
+              description: Required hardware specifications
+            software:
+              type: array
+              items:
+                type: string
+              description: Required software versions
+            dependencies:
+              type: array
+              items:
+                type: string
+              description: Required packages/libraries
+        execution_steps:
+          type: array
+          items:
+            type: string
+          minItems: 1
+          description: Step-by-step execution instructions
+        expected_output:
+          type: string
+          minLength: 10
+          description: What should happen when executed correctly
+        common_errors:
+          type: array
+          items:
+            type: object
+            properties:
+              error:
+                type: string
+              cause:
+                type: string
+              solution:
+                type: string
+        learning_objectives:
+          type: array
+          items:
+            type: string
+          minItems: 1
+          description: What reader should understand after running
+        performance_constraints:
+          type: object
+          properties:
+            latency_requirement:
+              type: string
+              description: Maximum allowed execution time
+            memory_limit:
+              type: string
+              description: Memory usage constraints
+            cpu_limit:
+              type: string
+              description: CPU usage constraints
+
+    ValidationRules:
+      type: object
+      properties:
+        syntax_check:
+          type: boolean
+          default: true
+          description: Code must be syntactically valid
+        import_check:
+          type: boolean
+          default: true
+          description: All imports must be resolvable
+        execution_test:
+          type: boolean
+          default: true
+          description: Code must execute without errors
+        performance_test:
+          type: boolean
+          default: false
+          description: Performance constraints must be met
+        platform_compatibility:
+          type: boolean
+          default: true
+          description: Must work on specified platform versions
+
+  parameters:
+    PlatformParameter:
+      name: platform
+      in: query
+      description: Filter examples by platform
+      schema:
+        type: string
+        enum: [ros2, isaac, simulation, general]
+
+    LanguageParameter:
+      name: language
+      in: query
+      description: Filter examples by programming language
+      schema:
+        type: string
+        enum: [python, yaml, xml, bash, cpp]
+
+  responses:
+    CodeExampleResponse:
+      description: Code example with metadata
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CodeExample'
+
+    ValidationResponse:
+      description: Code validation results
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              valid:
+                type: boolean
+              errors:
+                type: array
+                items:
+                  type: string
+              warnings:
+                type: array
+                items:
+                  type: string
+              performance_metrics:
+                type: object
+                properties:
+                  execution_time:
+                    type: number
+                  memory_usage:
+                    type: number
+                  cpu_usage:
+                    type: number

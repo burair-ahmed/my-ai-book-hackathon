@@ -1,0 +1,238 @@
+openapi: 3.0.3
+info:
+  title: Physical AI Book Content Interface
+  version: 1.0.0
+  description: Contract defining content structure and interfaces between book components
+
+paths:
+  /chapters:
+    get:
+      summary: Retrieve chapter metadata
+      responses:
+        '200':
+          description: Chapter list with metadata
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  chapters:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Chapter'
+                  total_chapters:
+                    type: integer
+                    maximum: 5
+
+  /chapters/{chapterId}:
+    get:
+      summary: Retrieve complete chapter content
+      parameters:
+        - name: chapterId
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+      responses:
+        '200':
+          description: Complete chapter with sections and metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChapterDetail'
+
+  /chapters/{chapterId}/sections/{sectionId}:
+    get:
+      summary: Retrieve individual section content
+      parameters:
+        - name: chapterId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: sectionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Section content with cross-references
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+
+  /concepts:
+    get:
+      summary: Retrieve concept definitions
+      responses:
+        '200':
+          description: All concepts with definitions and relationships
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  concepts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Concept'
+
+  /cross-references:
+    post:
+      summary: Validate cross-reference integrity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                source:
+                  type: string
+                  description: Source content identifier
+                target:
+                  type: string
+                  description: Target content identifier
+                reference_type:
+                  type: string
+                  enum: [concept, chapter, section, example, external]
+      responses:
+        '200':
+          description: Cross-reference validation result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  valid:
+                    type: boolean
+                  exists:
+                    type: boolean
+                  version_compatible:
+                    type: boolean
+
+components:
+  schemas:
+    Chapter:
+      type: object
+      required:
+        - number
+        - title
+        - architectural_layer
+      properties:
+        number:
+          type: integer
+          minimum: 1
+          maximum: 5
+        title:
+          type: string
+          minLength: 10
+          maxLength: 100
+        architectural_layer:
+          type: string
+          enum:
+            - foundations
+            - nervous_system
+            - simulation
+            - acceleration
+            - autonomy
+        reading_time:
+          type: integer
+          minimum: 30
+          maximum: 120
+        difficulty:
+          type: string
+          enum: [beginner, intermediate, advanced]
+        prerequisites:
+          type: array
+          items:
+            type: string
+
+    ChapterDetail:
+      allOf:
+        - $ref: '#/components/schemas/Chapter'
+        - type: object
+          properties:
+            sections:
+              type: array
+              items:
+                $ref: '#/components/schemas/Section'
+            summary:
+              type: string
+              minLength: 100
+
+    Section:
+      type: object
+      required:
+        - title
+        - content_type
+        - learning_progression
+      properties:
+        title:
+          type: string
+          minLength: 5
+          maxLength: 80
+        content_type:
+          type: string
+          enum:
+            - conceptual
+            - architectural
+            - practical
+            - reference
+            - summary
+        learning_progression:
+          type: integer
+          minimum: 1
+        content:
+          type: string
+          minLength: 500
+        concepts:
+          type: array
+          items:
+            type: string
+        cross_references:
+          type: array
+          items:
+            type: object
+            properties:
+              target:
+                type: string
+              type:
+                type: string
+                enum: [concept, chapter, section, example]
+
+    Concept:
+      type: object
+      required:
+        - name
+        - definition
+        - importance
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 50
+        definition:
+          type: string
+          minLength: 50
+          maxLength: 500
+        importance:
+          type: string
+          minLength: 50
+          maxLength: 300
+        prerequisites:
+          type: array
+          items:
+            type: string
+        examples:
+          type: array
+          items:
+            type: string
+        misconceptions:
+          type: array
+          items:
+            type: string

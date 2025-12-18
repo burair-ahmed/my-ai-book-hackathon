@@ -1,0 +1,130 @@
+{
+  "/my-ai-book-hackathon/__docusaurus/debug-a96": {
+    "__comp": "__comp---theme-debug-config-23-a-2ff",
+    "__context": {
+      "plugin": "plugin---my-ai-book-hackathon-docusaurus-debugb-38-df0"
+    }
+  },
+  "/my-ai-book-hackathon/__docusaurus/debug/config-eb4": {
+    "__comp": "__comp---theme-debug-config-23-a-2ff",
+    "__context": {
+      "plugin": "plugin---my-ai-book-hackathon-docusaurus-debugb-38-df0"
+    }
+  },
+  "/my-ai-book-hackathon/__docusaurus/debug/content-983": {
+    "__comp": "__comp---theme-debug-contentba-8-ce7",
+    "__context": {
+      "plugin": "plugin---my-ai-book-hackathon-docusaurus-debugb-38-df0"
+    },
+    "__props": "__props---my-ai-book-hackathon-docusaurus-debug-content-409-8dd"
+  },
+  "/my-ai-book-hackathon/__docusaurus/debug/globalData-051": {
+    "__comp": "__comp---theme-debug-global-dataede-0fa",
+    "__context": {
+      "plugin": "plugin---my-ai-book-hackathon-docusaurus-debugb-38-df0"
+    }
+  },
+  "/my-ai-book-hackathon/__docusaurus/debug/metadata-e12": {
+    "__comp": "__comp---theme-debug-site-metadata-68-e-3d4",
+    "__context": {
+      "plugin": "plugin---my-ai-book-hackathon-docusaurus-debugb-38-df0"
+    }
+  },
+  "/my-ai-book-hackathon/__docusaurus/debug/registry-1ce": {
+    "__comp": "__comp---theme-debug-registry-679-501",
+    "__context": {
+      "plugin": "plugin---my-ai-book-hackathon-docusaurus-debugb-38-df0"
+    }
+  },
+  "/my-ai-book-hackathon/__docusaurus/debug/routes-ee1": {
+    "__comp": "__comp---theme-debug-routes-946-699",
+    "__context": {
+      "plugin": "plugin---my-ai-book-hackathon-docusaurus-debugb-38-df0"
+    }
+  },
+  "/my-ai-book-hackathon/docs-a17": {
+    "__comp": "__comp---theme-docs-root-5-e-9-0b6",
+    "__context": {
+      "plugin": "plugin---my-ai-book-hackathon-docsaba-c61"
+    }
+  },
+  "/my-ai-book-hackathon/docs-231": {
+    "__comp": "__comp---theme-doc-version-roota-7-b-5de",
+    "__props": "__props---my-ai-book-hackathon-docsf-45-ed3"
+  },
+  "/my-ai-book-hackathon/docs-d31": {
+    "__comp": "__comp---theme-doc-roota-94-67a"
+  },
+  "/my-ai-book-hackathon/docs/appendices/glossary-85e": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---my-ai-book-hackathon-docs-appendices-glossary-3-bc-e01"
+  },
+  "/my-ai-book-hackathon/docs/appendices/hardware-references-859": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---my-ai-book-hackathon-docs-appendices-hardware-references-247-92b"
+  },
+  "/my-ai-book-hackathon/docs/appendices/mathematical-foundations-170": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---my-ai-book-hackathon-docs-appendices-mathematical-foundations-05-f-54e"
+  },
+  "/my-ai-book-hackathon/docs/chapter-01/-bd5": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---my-ai-book-hackathon-docs-chapter-01-c-87-e56"
+  },
+  "/my-ai-book-hackathon/docs/chapter-01/chapter-summary-e87": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---my-ai-book-hackathon-docs-chapter-01-chapter-summary-2-bf-491"
+  },
+  "/my-ai-book-hackathon/docs/chapter-01/embodied-cognition-78b": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---my-ai-book-hackathon-docs-chapter-01-embodied-cognition-9-bb-5d4"
+  },
+  "/my-ai-book-hackathon/docs/chapter-01/physical-constraints-a3d": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---my-ai-book-hackathon-docs-chapter-01-physical-constraints-311-3e6"
+  },
+  "/my-ai-book-hackathon/docs/chapter-01/sensorimotor-integration-06a": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---my-ai-book-hackathon-docs-chapter-01-sensorimotor-integrationc-37-d65"
+  },
+  "/my-ai-book-hackathon/docs/chapter-02/-f1f": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---my-ai-book-hackathon-docs-chapter-02-f-82-b0f"
+  },
+  "/my-ai-book-hackathon/docs/chapter-02/node-communication-322": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---my-ai-book-hackathon-docs-chapter-02-node-communication-7-fb-22c"
+  },
+  "/my-ai-book-hackathon/docs/chapter-02/ros2-architecture-161": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---my-ai-book-hackathon-docs-chapter-02-ros-2-architecture-0-fe-033"
+  },
+  "/my-ai-book-hackathon/docs/chapter-03/-572": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---my-ai-book-hackathon-docs-chapter-03-781-8e8"
+  },
+  "/my-ai-book-hackathon/docs/chapter-03/gazebo-integration-b2e": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---my-ai-book-hackathon-docs-chapter-03-gazebo-integration-05-c-eb0"
+  },
+  "/my-ai-book-hackathon/docs/chapter-04/-398": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---my-ai-book-hackathon-docs-chapter-04-2-aa-7bf"
+  },
+  "/my-ai-book-hackathon/docs/chapter-04/isaac-sim-integration-3b0": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---my-ai-book-hackathon-docs-chapter-04-isaac-sim-integration-27-e-87f"
+  },
+  "/my-ai-book-hackathon/docs/chapter-05/-5d8": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---my-ai-book-hackathon-docs-chapter-05-a-22-934"
+  },
+  "/my-ai-book-hackathon/docs/chapter-05/multi-modal-integration-8c4": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---my-ai-book-hackathon-docs-chapter-05-multi-modal-integrationd-0-d-6e6"
+  },
+  "/my-ai-book-hackathon/docs/introduction-e27": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---my-ai-book-hackathon-docs-introductiona-09-2e1"
+  }
+}

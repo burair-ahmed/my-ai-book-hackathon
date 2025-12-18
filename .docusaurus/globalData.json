@@ -1,0 +1,118 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "path": "/my-ai-book-hackathon/docs",
+      "versions": [
+        {
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
+          "path": "/my-ai-book-hackathon/docs",
+          "mainDocId": "introduction",
+          "docs": [
+            {
+              "id": "appendices/glossary",
+              "path": "/my-ai-book-hackathon/docs/appendices/glossary",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "appendices/hardware-references",
+              "path": "/my-ai-book-hackathon/docs/appendices/hardware-references",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "appendices/mathematical-foundations",
+              "path": "/my-ai-book-hackathon/docs/appendices/mathematical-foundations",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "chapter-01/chapter-summary",
+              "path": "/my-ai-book-hackathon/docs/chapter-01/chapter-summary",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "chapter-01/embodied-cognition",
+              "path": "/my-ai-book-hackathon/docs/chapter-01/embodied-cognition",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "chapter-01/index",
+              "path": "/my-ai-book-hackathon/docs/chapter-01/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "chapter-01/physical-constraints",
+              "path": "/my-ai-book-hackathon/docs/chapter-01/physical-constraints",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "chapter-01/sensorimotor-integration",
+              "path": "/my-ai-book-hackathon/docs/chapter-01/sensorimotor-integration",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "chapter-02/index",
+              "path": "/my-ai-book-hackathon/docs/chapter-02/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "chapter-02/node-communication",
+              "path": "/my-ai-book-hackathon/docs/chapter-02/node-communication",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "chapter-02/ros2-architecture",
+              "path": "/my-ai-book-hackathon/docs/chapter-02/ros2-architecture",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "chapter-03/gazebo-integration",
+              "path": "/my-ai-book-hackathon/docs/chapter-03/gazebo-integration",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "chapter-03/index",
+              "path": "/my-ai-book-hackathon/docs/chapter-03/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "chapter-04/index",
+              "path": "/my-ai-book-hackathon/docs/chapter-04/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "chapter-04/isaac-sim-integration",
+              "path": "/my-ai-book-hackathon/docs/chapter-04/isaac-sim-integration",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "chapter-05/index",
+              "path": "/my-ai-book-hackathon/docs/chapter-05/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "chapter-05/multi-modal-integration",
+              "path": "/my-ai-book-hackathon/docs/chapter-05/multi-modal-integration",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "introduction",
+              "path": "/my-ai-book-hackathon/docs/introduction",
+              "sidebar": "tutorialSidebar"
+            }
+          ],
+          "draftIds": [],
+          "sidebars": {
+            "tutorialSidebar": {
+              "link": {
+                "path": "/my-ai-book-hackathon/docs/introduction",
+                "label": "Introduction"
+              }
+            }
+          }
+        }
+      ],
+      "breadcrumbs": true
+    }
+  }
+}
