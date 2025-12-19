@@ -57,6 +57,12 @@ function extractFrontmatter(content) {
   return frontmatter;
 }
 
+function stripCodeBlocks(content) {
+  return content
+    .replace(/```[\s\S]*?```/g, '') // Fenced code blocks
+    .replace(/`[^`\n]+`/g, '');    // Inline code
+}
+
 function validateFrontmatter(filePath, content) {
   const frontmatter = extractFrontmatter(content);
   const errors = [];
@@ -74,10 +80,13 @@ function validateLinks(filePath, content) {
   const errors = [];
   const links = [];
 
-  // Extract all links
+  // Strip code blocks to avoid false positives in code comments/markers
+  const cleanContent = stripCodeBlocks(content);
+
+  // Extract all links from clean content
   for (const pattern of VALIDATION_RULES.internalRefs) {
     let match;
-    while ((match = pattern.exec(content)) !== null) {
+    while ((match = pattern.exec(cleanContent)) !== null) {
       links.push({
         text: match[1],
         url: match[2] || match[1],
@@ -88,8 +97,8 @@ function validateLinks(filePath, content) {
 
   for (const pattern of VALIDATION_RULES.externalRefs) {
     let match;
-    while ((match = pattern.exec(content)) !== null) {
-      if (!content.includes(`](${match[0]})`) && !content.includes(`${match[0]}: `)) {
+    while ((match = pattern.exec(cleanContent)) !== null) {
+      if (!cleanContent.includes(`](${match[0]})`) && !cleanContent.includes(`${match[0]}: `)) {
         links.push({
           url: match[0],
           type: 'external'
