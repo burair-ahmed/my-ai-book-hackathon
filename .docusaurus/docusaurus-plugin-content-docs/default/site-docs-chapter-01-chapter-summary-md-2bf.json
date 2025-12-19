@@ -5,7 +5,7 @@
   "source": "@site/docs/chapter-01/chapter-summary.md",
   "sourceDirName": "chapter-01",
   "slug": "/chapter-01/chapter-summary",
-  "permalink": "/my-ai-book-hackathon/docs/chapter-01/chapter-summary",
+  "permalink": "/my-ai-book-hackathon/chapter-01/chapter-summary",
   "draft": false,
   "unlisted": false,
   "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/chapter-01/chapter-summary.md",
@@ -19,10 +19,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "1.3 Physical Constraints",
-    "permalink": "/my-ai-book-hackathon/docs/chapter-01/physical-constraints"
+    "permalink": "/my-ai-book-hackathon/chapter-01/physical-constraints"
   },
   "next": {
     "title": "Chapter Overview",
-    "permalink": "/my-ai-book-hackathon/docs/chapter-02/"
+    "permalink": "/my-ai-book-hackathon/chapter-02/"
   }
 }

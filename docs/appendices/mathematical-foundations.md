@@ -13,7 +13,7 @@ sidebar_position: 2
 - Jacobian matrices for kinematic analysis
 
 ### Key Equations
-- Forward kinematics: ${}^0T_n = {}^0T_1 \cdot {}^1T_2 \cdots {}^{n-1}T_n$
+- Forward kinematics: $ {}^0T_n = {}^0T_1 \cdot {}^1T_2 \cdots {}^{n-1}T_n$
 - Velocity propagation: $\dot{x} = J \dot{q}$
 
 ## Control Theory

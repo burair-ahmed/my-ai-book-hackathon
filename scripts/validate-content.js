@@ -41,7 +41,7 @@ function readMarkdownFile(filePath) {
 }
 
 function extractFrontmatter(content) {
-  const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+  const frontmatterMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!frontmatterMatch) return {};
 
   const frontmatter = {};
@@ -70,7 +70,7 @@ function validateFrontmatter(filePath, content) {
   return errors;
 }
 
-function validateLinks(content) {
+function validateLinks(filePath, content) {
   const errors = [];
   const links = [];
 
@@ -97,7 +97,6 @@ function validateLinks(content) {
       }
     }
   }
-
   // Validate internal references (basic check for file existence)
   for (const link of links.filter(l => l.type === 'internal')) {
     if (link.url.startsWith('./') || link.url.startsWith('../') || !link.url.includes('://')) {
@@ -130,7 +129,7 @@ async function validateFile(filePath) {
 
   const errors = [
     ...validateFrontmatter(filePath, content),
-    ...validateLinks(content),
+    ...validateLinks(filePath, content),
     ...validateContent(content),
   ];
 
