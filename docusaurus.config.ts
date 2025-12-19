@@ -11,12 +11,14 @@ const config: Config = {
 
   // Set the production url of your site here
   url: 'https://burair-ahmed.github.io',
-  baseUrl: '/my-ai-book-hackathon.github.io/',
+  baseUrl: '/my-ai-book-hackathon/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'burair-ahmed', // Usually your GitHub org/user name.
-  projectName: 'my-ai-book-hackathon.github.io', // Usually your repo name.
+  projectName: 'my-ai-book-hackathon', // Usually your repo name.
+
+  trailingSlash: false,
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
