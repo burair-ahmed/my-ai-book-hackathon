@@ -36,8 +36,11 @@ const ChatBot: React.FC = () => {
 
     setMessages(prev => [...prev, { role: 'bot', text: '' }]);
 
+    // REPLACE THIS with your Hugging Face Space URL (e.g., https://user-name-space-name.hf.space)
+    const API_URL = 'http://localhost:8000';
+
     try {
-      const response = await fetch('http://localhost:8000/api/chat', {
+      const response = await fetch(`${API_URL}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
