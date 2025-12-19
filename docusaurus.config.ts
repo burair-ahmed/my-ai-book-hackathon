@@ -1,6 +1,8 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 
 const config: Config = {
   title: 'Physical AI & Humanoid Robotics',
@@ -8,14 +10,12 @@ const config: Config = {
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://your-username.github.io',
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
+  url: 'https://burair-ahmed.github.io',
   baseUrl: '/my-ai-book-hackathon/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'your-username', // Usually your GitHub org/user name.
+  organizationName: 'burair-ahmed', // Usually your GitHub org/user name.
   projectName: 'my-ai-book-hackathon', // Usually your repo name.
 
   onBrokenLinks: 'throw',
@@ -39,6 +39,9 @@ const config: Config = {
           // Remove this to remove the "edit this page" links.
           editUrl:
             'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          remarkPlugins: [remarkMath],
+          rehypePlugins: [rehypeKatex],
+          routeBasePath: '/',
         },
         blog: false,
         theme: {
@@ -99,7 +102,6 @@ const config: Config = {
         "\\Cmat": "\\mathbf{C}", // Output matrix
         "\\D": "\\mathbf{D}", // Feedthrough matrix
         "\\Q": "\\mathbf{Q}", // State covariance
-        "\\Rmat": "\\mathbf{R}", // Measurement covariance
         "\\P": "\\mathbf{P}", // Error covariance
         "\\Kmat": "\\mathbf{K}", // Kalman gain
         "\\z": "\\mathbf{z}", // Measurement vector
@@ -113,15 +115,15 @@ const config: Config = {
           items: [
             {
               label: 'Chapter 1: Foundations',
-              to: '/docs/category/chapter-1-foundations',
+              to: '/chapter-01/',
             },
             {
               label: 'Chapter 2: ROS 2',
-              to: '/docs/category/chapter-2-ros-2',
+              to: '/chapter-02/',
             },
             {
               label: 'Chapter 3: Simulation',
-              to: '/docs/category/chapter-3-simulation',
+              to: '/chapter-03/',
             },
           ],
         },
@@ -130,11 +132,11 @@ const config: Config = {
           items: [
             {
               label: 'Chapter 4: NVIDIA Isaac',
-              to: '/docs/category/chapter-4-nvidia-isaac',
+              to: '/chapter-04/',
             },
             {
               label: 'Chapter 5: Autonomous Systems',
-              to: '/docs/category/chapter-5-autonomous-systems',
+              to: '/chapter-05/',
             },
           ],
         },
@@ -143,7 +145,7 @@ const config: Config = {
           items: [
             {
               label: 'GitHub',
-              href: 'https://github.com/your-username/my-ai-book-hackathon',
+              href: 'https://github.com/burair-ahmed/my-ai-book-hackathon',
             },
             {
               label: 'ROS 2',

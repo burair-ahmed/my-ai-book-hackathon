@@ -5,7 +5,7 @@
   "source": "@site/docs/chapter-02/index.md",
   "sourceDirName": "chapter-02",
   "slug": "/chapter-02/",
-  "permalink": "/my-ai-book-hackathon/docs/chapter-02/",
+  "permalink": "/my-ai-book-hackathon/chapter-02/",
   "draft": false,
   "unlisted": false,
   "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/chapter-02/index.md",
@@ -19,10 +19,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "1.4 Chapter Summary",
-    "permalink": "/my-ai-book-hackathon/docs/chapter-01/chapter-summary"
+    "permalink": "/my-ai-book-hackathon/chapter-01/chapter-summary"
   },
   "next": {
     "title": "2.1 ROS 2 Architecture",
-    "permalink": "/my-ai-book-hackathon/docs/chapter-02/ros2-architecture"
+    "permalink": "/my-ai-book-hackathon/chapter-02/ros2-architecture"
   }
 }

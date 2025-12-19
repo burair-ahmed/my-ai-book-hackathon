@@ -515,7 +515,6 @@ The challenge lies not just in developing individual modality capabilities, but 
 ## Chapter Navigation
 
 - **Previous**: [Chapter Overview](index.md)
-- **Next**: [Autonomous Humanoids](autonomous-humanoids.md)
 
 ---
 

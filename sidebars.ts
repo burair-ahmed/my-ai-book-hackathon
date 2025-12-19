@@ -15,6 +15,11 @@ const sidebars: SidebarsConfig = {
   tutorialSidebar: [
     {
       type: 'doc',
+      id: 'index',
+      label: 'Home'
+    },
+    {
+      type: 'doc',
       id: 'introduction',
       label: 'Introduction'
     },

@@ -7,9 +7,9 @@ export default {
   "title": "Physical AI & Humanoid Robotics",
   "tagline": "From Digital Intelligence to Embodied Systems",
   "favicon": "img/favicon.ico",
-  "url": "https://your-username.github.io",
+  "url": "https://burair-ahmed.github.io",
   "baseUrl": "/my-ai-book-hackathon/",
-  "organizationName": "your-username",
+  "organizationName": "burair-ahmed",
   "projectName": "my-ai-book-hackathon",
   "onBrokenLinks": "throw",
   "i18n": {
@@ -26,7 +26,14 @@ export default {
       {
         "docs": {
           "sidebarPath": "./sidebars.ts",
-          "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/"
+          "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
+          "remarkPlugins": [
+            null
+          ],
+          "rehypePlugins": [
+            null
+          ],
+          "routeBasePath": "/"
         },
         "blog": false,
         "theme": {
@@ -97,15 +104,15 @@ export default {
           "items": [
             {
               "label": "Chapter 1: Foundations",
-              "to": "/docs/category/chapter-1-foundations"
+              "to": "/chapter-01/"
             },
             {
               "label": "Chapter 2: ROS 2",
-              "to": "/docs/category/chapter-2-ros-2"
+              "to": "/chapter-02/"
             },
             {
               "label": "Chapter 3: Simulation",
-              "to": "/docs/category/chapter-3-simulation"
+              "to": "/chapter-03/"
             }
           ]
         },
@@ -114,11 +121,11 @@ export default {
           "items": [
             {
               "label": "Chapter 4: NVIDIA Isaac",
-              "to": "/docs/category/chapter-4-nvidia-isaac"
+              "to": "/chapter-04/"
             },
             {
               "label": "Chapter 5: Autonomous Systems",
-              "to": "/docs/category/chapter-5-autonomous-systems"
+              "to": "/chapter-05/"
             }
           ]
         },
@@ -127,7 +134,7 @@ export default {
           "items": [
             {
               "label": "GitHub",
-              "href": "https://github.com/your-username/my-ai-book-hackathon"
+              "href": "https://github.com/burair-ahmed/my-ai-book-hackathon"
             },
             {
               "label": "ROS 2",
