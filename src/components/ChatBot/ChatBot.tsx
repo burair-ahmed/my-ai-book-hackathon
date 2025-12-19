@@ -36,8 +36,8 @@ const ChatBot: React.FC = () => {
 
     setMessages(prev => [...prev, { role: 'bot', text: '' }]);
 
-    // REPLACE THIS with your Hugging Face Space URL (e.g., https://user-name-space-name.hf.space)
-    const API_URL = 'http://localhost:8000';
+    // Live backend on Hugging Face
+    const API_URL = 'https://burair-ahmed-ai-book-with-rag-chatbot.hf.space';
 
     try {
       const response = await fetch(`${API_URL}/api/chat`, {
