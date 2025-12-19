@@ -1,0 +1,112 @@
+.chatbot-container {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+    font-family: var(--ifm-font-family-base);
+}
+
+.chatbot-button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--ifm-color-primary);
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.chatbot-button:hover {
+    transform: scale(1.1);
+}
+
+.chatbot-window {
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    width: 350px;
+    max-height: 500px;
+    background: var(--ifm-background-surface-color, #fff);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.chatbot-header {
+    background: var(--ifm-color-primary);
+    color: #fff;
+    padding: 1rem;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chatbot-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 350px;
+}
+
+.message {
+    padding: 0.5rem 0.8rem;
+    border-radius: 8px;
+    max-width: 85%;
+    font-size: 0.9rem;
+}
+
+.message.user {
+    align-self: flex-end;
+    background: var(--ifm-color-primary-lightest);
+    color: var(--ifm-color-primary-darker);
+}
+
+.message.bot {
+    align-self: flex-start;
+    background: var(--ifm-color-emphasis-100);
+    color: var(--ifm-color-emphasis-800);
+}
+
+.chatbot-input-area {
+    padding: 1rem;
+    border-top: 1px solid var(--ifm-color-emphasis-200);
+    display: flex;
+    gap: 0.5rem;
+}
+
+.chatbot-input {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid var(--ifm-color-emphasis-300);
+    border-radius: 4px;
+    outline: none;
+}
+
+.chatbot-send {
+    background: var(--ifm-color-primary);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.selection-context {
+    padding: 0.5rem;
+    background: var(--ifm-color-info-lightest);
+    border-left: 3px solid var(--ifm-color-info);
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+}
