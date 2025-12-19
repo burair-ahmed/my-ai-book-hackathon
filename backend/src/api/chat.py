@@ -5,6 +5,7 @@ from src.services.gemini import gemini_service
 from src.services.vector_store import vector_service
 from src.models.chat_session import session_storage
 import uuid
+import re
 
 router = APIRouter()
 
@@ -26,11 +27,15 @@ async def chat(request: ChatRequest):
         history = session_storage.get_session(session_id)
         history_context = "\n".join([f"{m['role'].upper()}: {m['text']}" for m in history[-5:]]) # Last 5 messages
         
-        # 2. Generate embedding for the user message
-        query_vector = await gemini_service.get_embedding(request.message)
+        # Clean query: focus on core keywords and normalize terms
+        clean_query = re.sub(r"^(what is|tell me about|how to|can you explain|what's)\s+", "", request.message, flags=re.IGNORECASE)
+        # Normalize "ROS2" to "ROS 2" for better matching with book content
+        clean_query = re.sub(r"ROS(\d)", r"ROS \1", clean_query, flags=re.IGNORECASE)
+        
+        query_vector = await gemini_service.get_embedding(clean_query)
         
         # 3. Search Qdrant for relevant book context
-        search_results = await vector_service.search(query_vector, limit=3)
+        search_results = await vector_service.search(query_vector, limit=5)
         
         # 4. Build context string
         context_chunks = [r["text"] for r in search_results]
