@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request, Depends
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from typing import Optional, List, Dict
@@ -6,9 +6,12 @@ import json
 import asyncio
 from src.services.gemini import gemini_service
 from src.services.vector_store import vector_service
+from src.services.auth import auth_service, HTTPAuthorizationCredentials
 from src.models.chat_session import session_storage
+from src.api.profile import get_db_connection
 import uuid
 import re
+import os
 
 router = APIRouter()
 
@@ -22,9 +25,33 @@ class ChatResponse(BaseModel):
     sources: List[str]
 
 @router.post("/chat")
-async def chat(request: ChatRequest):
+async def chat(request: Request, chat_request: ChatRequest):
     try:
-        session_id = request.session_id or str(uuid.uuid4())
+        # Optional Auth for Personalization
+        user_profile = None
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            try:
+                # Manual credential extraction for optional auth
+                token = auth_header.split(" ")[1]
+                user_data = await auth_service.verify_token(HTTPAuthorizationCredentials(scheme="Bearer", credentials=token))
+                user_id = user_data['sub']
+                
+                # Fetch profile from DB
+                conn = get_db_connection()
+                cur = conn.cursor()
+                try:
+                    cur.execute("SELECT software_background, hardware_background FROM public.user_profiles WHERE user_id = %s", (user_id,))
+                    row = cur.fetchone()
+                    if row:
+                        user_profile = {"software_background": row[0], "hardware_background": row[1]}
+                finally:
+                    cur.close()
+                    conn.close()
+            except Exception as auth_e:
+                print(f"Personalization error (ignoring): {auth_e}")
+
+        session_id = chat_request.session_id or str(uuid.uuid4())
         
         # 1. Load chat history
         history = session_storage.get_session(session_id)
@@ -59,7 +86,7 @@ async def chat(request: ChatRequest):
                 # Send initial sources
                 yield f"data: {json.dumps({'sources': list(set(sources))})}\n\n"
                 
-                async for chunk in gemini_service.generate_response_stream(rag_prompt, context=context_text):
+                async for chunk in gemini_service.generate_response_stream(rag_prompt, context=context_text, user_profile=user_profile):
                     full_response += chunk
                     yield f"data: {json.dumps({'text': chunk})}\n\n"
                 

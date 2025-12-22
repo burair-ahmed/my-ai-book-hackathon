@@ -20,10 +20,16 @@ class GeminiService:
         )
         return result['embedding']
 
-    async def generate_response_stream(self, prompt: str, context: Optional[str] = None):
-        """Generate a streaming response based on a prompt and optional context."""
-        system_instructions = """You are an expert AI Robotics and Embodied Intelligence Assistant. 
-Your goal is to explain technical concepts from the book clearly and accurately.
+    async def generate_response_stream(self, prompt: str, context: Optional[str] = None, user_profile: Optional[dict] = None):
+        """Generate a streaming response based on a prompt and optional context/profile."""
+        personalization = ""
+        if user_profile:
+            sw = user_profile.get("software_background", {})
+            hw = user_profile.get("hardware_background", {})
+            personalization = f"\nUSER CONTEXT:\nSoftware: {sw}\nHardware: {hw}\nAdjust your technical level and examples accordingly (e.g. use Arduino C++ if they know it, or ROS 2 logic if preferred)."
+
+        system_instructions = f"""You are an expert AI Robotics and Embodied Intelligence Assistant. 
+Your goal is to explain technical concepts from the book clearly and accurately.{personalization}
 
 RULES:
 1. Use the provided context to answer. If the answer isn't there, say you don't know but offer general AI/Robotics knowledge IF relevant.

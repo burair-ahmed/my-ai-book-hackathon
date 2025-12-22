@@ -8,6 +8,7 @@ load_dotenv(os.path.join(base_dir, ".env"))
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.api.chat import router as chat_router
+from src.api.profile import router as profile_router
 
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -24,6 +25,7 @@ app.add_middleware(
 )
 
 app.include_router(chat_router, prefix="/api")
+app.include_router(profile_router, prefix="/api/profile")
 
 @app.get("/")
 async def root():

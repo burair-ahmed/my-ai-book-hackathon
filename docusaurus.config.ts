@@ -74,6 +74,10 @@ const config: Config = {
           label: 'GitHub',
           position: 'right',
         },
+        {
+          type: 'custom-AuthButton', 
+          position: 'right',
+        },
       ],
     },
     // KaTeX configuration for robotics mathematics
