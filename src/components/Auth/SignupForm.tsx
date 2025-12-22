@@ -38,7 +38,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToSignin }) 
       if (authError) throw new Error(authError.message);
 
       // Save personalization profile
-      const profileResponse = await fetch('https://burair-ahmed-ai-book-with-rag-chatbot.hf.space/api/profile', {
+      const profileResponse = await fetch('http://localhost:7860/api/profile', {
           method: 'POST',
           headers: { 
               'Content-Type': 'application/json',
