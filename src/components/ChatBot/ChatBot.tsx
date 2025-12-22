@@ -33,7 +33,7 @@ const ChatBot: React.FC = () => {
     setMessages(newMessages);
     setInput('');
     setIsLoading(true);
-//Just for repdeploy
+
     setMessages(prev => [...prev, { role: 'bot', text: '' }]);
 
     // Live backend on Hugging Face
