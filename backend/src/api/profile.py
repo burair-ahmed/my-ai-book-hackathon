@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from src.services.auth import auth_service
-from src.services.vector_store import VectorStore
+from src.services.vector_store import VectorStoreService
 import psycopg2
 from psycopg2.extras import Json
 import os

@@ -13,6 +13,7 @@ RUN pip install --no-cache-dir -r backend/requirements.txt
 # Copy backend code and scripts
 COPY backend ./backend
 COPY scripts ./scripts
+COPY docs /app/docs
 
 # Environment variables
 ENV PORT=7860
