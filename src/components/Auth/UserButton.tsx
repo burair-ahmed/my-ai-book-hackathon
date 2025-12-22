@@ -11,7 +11,7 @@ const UserButton: React.FC = () => {
 
   const handleLogout = async () => {
     await authClient.signOut();
-    // Session update should be automatic via the hook
+    window.location.reload(); // Force reload to clear state
   };
 
   return (
