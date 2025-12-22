@@ -40,7 +40,7 @@ const ChapterPersonalizer: React.FC<ChapterPersonalizerProps> = ({ chapterId }) 
         return;
       }
       
-      const response = await fetch('http://localhost:7860/api/personalize', {
+      const response = await fetch('https://burair-ahmed-ai-book-with-rag-chatbot.hf.space/api/personalize', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
