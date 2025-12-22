@@ -1,48 +1,28 @@
-import psycopg2
-from datetime import datetime, timezone
+import httpx
+import jwt
+from jwt import PyJWKClient
 from fastapi import HTTPException, Security
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 import os
 
 class AuthService:
     def __init__(self):
-        self.db_url = os.getenv("NEON_DATABASE_URL")
+        self.jwks_url = os.getenv("NEON_AUTH_URL") + "/.well-known/jwks.json"
+        self.jwks_client = PyJWKClient(self.jwks_url)
         self.security = HTTPBearer()
 
     async def verify_token(self, auth: HTTPAuthorizationCredentials = Security(HTTPBearer())):
         token = auth.credentials
-        conn = None
         try:
-            conn = psycopg2.connect(self.db_url)
-            cur = conn.cursor()
-            
-            # Query the session table in neon_auth schema
-            # Note: columns are case-sensitive usually if created by ORMs, checking exact names from inspection
-            cur.execute(
-                'SELECT "userId", "expiresAt" FROM neon_auth.session WHERE token = %s', 
-                (token,)
+            signing_key = self.jwks_client.get_signing_key_from_jwt(token)
+            data = jwt.decode(
+                token,
+                signing_key.key,
+                algorithms=["RS256"],
+                # options={"verify_aud": False} # Better Auth might have specific audience
             )
-            row = cur.fetchone()
-            
-            if not row:
-                raise Exception("Token not found")
-                
-            user_id, expires_at = row
-            
-            # Ensure timezone awareness
-            if expires_at.tzinfo is None:
-                expires_at = expires_at.replace(tzinfo=timezone.utc)
-            
-            if expires_at < datetime.now(timezone.utc):
-                 raise Exception("Token expired")
-                 
-            return {"sub": str(user_id)}
-            
+            return data # Contains user_id in 'sub'
         except Exception as e:
-            print(f"DEBUG: Token verification failed: {str(e)}")
             raise HTTPException(status_code=401, detail=f"Invalid token: {str(e)}")
-        finally:
-            if conn:
-                conn.close()
 
 auth_service = AuthService()

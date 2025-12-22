@@ -20,17 +20,6 @@ class GeminiService:
         )
         return result['embedding']
 
-    async def generate_content_stream(self, system_instruction: str, prompt: str):
-        """Generic streaming generation with custom system instruction."""
-        full_prompt = f"{system_instruction}\n\nUser Request: {prompt}\n\nAnswer:"
-        response = await self.model.generate_content_async(full_prompt, stream=True)
-        async for chunk in response:
-            try:
-                if chunk.text:
-                    yield chunk.text
-            except ValueError:
-                continue
-
     async def generate_response_stream(self, prompt: str, context: Optional[str] = None, user_profile: Optional[dict] = None):
         """Generate a streaming response based on a prompt and optional context/profile."""
         personalization = ""
