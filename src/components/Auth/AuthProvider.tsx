@@ -27,30 +27,37 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const fetchSession = async () => {
     try {
-      console.log("Checking session...");
+      console.log("[Auth] Checking session...");
       const { data } = await authClient.getSession();
-      console.log("Session fetched:", !!data);
+      console.log("[Auth] getSession response:", data ? "User found" : "No user");
       
       if (data) {
         setSession(data.session);
         setUser(data.user as User);
         
-        // Get JWT for backend verification
+        // Significant: better-auth uses the session cookie/header to issue a JWT via .token()
         try {
+          console.log("[Auth] Requesting signed JWT...");
           const { data: tokenData } = await authClient.token();
-          console.log("JWT fetched:", !!tokenData?.token);
-          setToken(tokenData?.token || null);
+          if (tokenData?.token) {
+            console.log("[Auth] JWT successfully retrieved");
+            setToken(tokenData.token);
+          } else {
+            console.warn("[Auth] No token returned from /auth/token");
+            setToken(null);
+          }
         } catch (tokenErr) {
-          console.error("JWT fetch failed:", tokenErr);
+          console.error("[Auth] Failed to fetch JWT (likely cross-origin/401):", tokenErr);
           setToken(null);
         }
       } else {
+        console.log("[Auth] No active session found");
         setSession(null);
         setUser(null);
         setToken(null);
       }
     } catch (error) {
-      console.error("Error fetching session:", error);
+      console.error("[Auth] Critical error during session sync:", error);
       setSession(null);
       setUser(null);
       setToken(null);

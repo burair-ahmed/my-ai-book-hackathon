@@ -41,27 +41,45 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToSignin }) 
       if (authError) throw new Error(authError.message);
       if (!data) throw new Error('Signup failed');
 
+      console.log("[Signup] Account created, fetching JWT...");
+
       // Fetch signed JWT for backend verification
-      const { data: tokenData } = await authClient.token();
-      const jwt = tokenData?.token;
+      let jwt = null;
+      try {
+        const { data: tokenData } = await authClient.token();
+        jwt = tokenData?.token;
+        console.log("[Signup] JWT retrieved:", !!jwt);
+      } catch (tokenErr) {
+        console.error("[Signup] JWT retrieval failed (expected if cookies blocked):", tokenErr);
+      }
 
       // Save personalization profile - Use production URL exclusively
       const BACKEND_URL = 'https://burair-ahmed-ai-book-with-rag-chatbot.hf.space';
-      const profileResponse = await fetch(`${BACKEND_URL}/api/profile/`, {
-          method: 'POST',
-          headers: { 
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${jwt}` 
-          },
-          body: JSON.stringify({
-              software_background: { languages: software },
-              hardware_background: { platforms: hardware }
-          })
-      });
+      if (jwt) {
+        console.log("[Signup] Sending profile to backend...");
+        const profileResponse = await fetch(`${BACKEND_URL}/api/profile/`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwt}` 
+            },
+            body: JSON.stringify({
+                software_background: { languages: software },
+                hardware_background: { platforms: hardware }
+            })
+        });
 
-      if (!profileResponse.ok) console.error("Failed to save profile");
+        if (!profileResponse.ok) {
+          console.error("[Signup] Profile creation failed:", await profileResponse.text());
+        } else {
+          console.log("[Signup] Profile created successfully");
+        }
+      } else {
+        console.warn("[Signup] Skipping profile creation due to missing JWT. User will need to personalize later.");
+      }
 
       // Update global auth state immediately
+      console.log("[Signup] Refreshing AuthProvider state...");
       await refresh();
       onSuccess();
     } catch (err: any) {
