@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { authClient } from '../../lib/auth';
+import { useAuth } from './AuthProvider';
 import './Auth.css';
 
 interface SigninFormProps {
@@ -13,6 +14,8 @@ const SigninForm: React.FC<SigninFormProps> = ({ onSuccess, onSwitchToSignup }) 
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const { refresh } = useAuth();
+
   const handleSignin = async () => {
     setError('');
     setIsSubmitting(true);
@@ -23,6 +26,9 @@ const SigninForm: React.FC<SigninFormProps> = ({ onSuccess, onSwitchToSignup }) 
       });
 
       if (authError) throw new Error(authError.message);
+      
+      // Update global auth state immediately
+      await refresh();
       onSuccess();
     } catch (err: any) {
       setError(err.message);

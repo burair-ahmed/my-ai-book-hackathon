@@ -1,11 +1,16 @@
 import React from 'react';
-import ChatBot from '@site/src/components/ChatBot/ChatBot';
+import ChatBot from '../components/ChatBot/ChatBot';
+import { AuthProvider } from '../components/Auth/AuthProvider';
 
-export default function Root({children}) {
+interface RootProps {
+  children: React.ReactNode;
+}
+
+export default function Root({children}: RootProps) {
   return (
-    <>
+    <AuthProvider>
       {children}
       <ChatBot />
-    </>
+    </AuthProvider>
   );
 }

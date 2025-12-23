@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { authClient } from '../../lib/auth';
+import { useAuth } from './AuthProvider';
 import './Auth.css';
 
 interface SignupFormProps {
@@ -16,6 +17,8 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToSignin }) 
   const [hardware, setHardware] = useState<string[]>([]);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { refresh } = useAuth();
 
   const toggleSelection = (item: string, list: string[], setList: (l: string[]) => void) => {
     if (list.includes(item)) {
@@ -36,6 +39,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToSignin }) 
       });
 
       if (authError) throw new Error(authError.message);
+      if (!data) throw new Error('Signup failed');
 
       // Save personalization profile
       const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:7860';
@@ -53,6 +57,8 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToSignin }) 
 
       if (!profileResponse.ok) console.error("Failed to save profile");
 
+      // Update global auth state immediately
+      await refresh();
       onSuccess();
     } catch (err: any) {
       setError(err.message);
