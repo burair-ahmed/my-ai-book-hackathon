@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useSelection } from './useSelection';
+import { useAuth } from '../Auth/AuthProvider';
 import './ChatBot.css';
 
 interface Message {
@@ -10,6 +11,7 @@ interface Message {
 }
 
 const ChatBot: React.FC = () => {
+  const { token, user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -36,13 +38,21 @@ const ChatBot: React.FC = () => {
 
     setMessages(prev => [...prev, { role: 'bot', text: '' }]);
 
-    // Use configurable backend URL
-    const API_URL = process.env.BACKEND_URL || 'https://burair-ahmed-ai-book-with-rag-chatbot.hf.space';
+    // Production backend URL
+    const API_URL = 'https://burair-ahmed-ai-book-with-rag-chatbot.hf.space';
 
     try {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const response = await fetch(`${API_URL}/api/chat`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           message: userMsg,
           selection: selection || undefined,

@@ -11,6 +11,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   session: any | null;
+  token: string | null;
   isLoading: boolean;
   logout: () => Promise<void>;
   refresh: () => Promise<void>;
@@ -21,6 +22,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<any | null>(null);
+  const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchSession = async () => {
@@ -29,14 +31,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (data) {
         setSession(data.session);
         setUser(data.user as User);
+        // Get JWT for backend verification
+        const { data: tokenData } = await authClient.token();
+        setToken(tokenData?.token || null);
       } else {
         setSession(null);
         setUser(null);
+        setToken(null);
       }
     } catch (error) {
       console.error("Error fetching session:", error);
       setSession(null);
       setUser(null);
+      setToken(null);
     } finally {
       setIsLoading(false);
     }
@@ -51,6 +58,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       await authClient.signOut();
       setUser(null);
       setSession(null);
+      setToken(null);
       // Manually clear storage just in case Better Auth misses something
       Object.keys(localStorage).forEach(key => {
         if (key.includes('better-auth')) {
@@ -68,7 +76,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, isLoading, logout, refresh }}>
+    <AuthContext.Provider value={{ user, session, token, isLoading, logout, refresh }}>
       {children}
     </AuthContext.Provider>
   );

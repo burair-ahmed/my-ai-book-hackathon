@@ -41,13 +41,17 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToSignin }) 
       if (authError) throw new Error(authError.message);
       if (!data) throw new Error('Signup failed');
 
-      // Save personalization profile
-      const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:7860';
+      // Fetch signed JWT for backend verification
+      const { data: tokenData } = await authClient.token();
+      const jwt = tokenData?.token;
+
+      // Save personalization profile - Use production URL exclusively
+      const BACKEND_URL = 'https://burair-ahmed-ai-book-with-rag-chatbot.hf.space';
       const profileResponse = await fetch(`${BACKEND_URL}/api/profile/`, {
           method: 'POST',
           headers: { 
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${data.token}` // Better Auth session token
+              'Authorization': `Bearer ${jwt}` 
           },
           body: JSON.stringify({
               software_background: { languages: software },

@@ -83,6 +83,7 @@ const config: Config = {
       logo: {
         alt: 'Physical AI Book Logo',
         src: 'img/logo.svg',
+        srcDark: 'img/logo.svg',
       },
       items: [
         {
