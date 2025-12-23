@@ -36,8 +36,8 @@ const ChatBot: React.FC = () => {
 
     setMessages(prev => [...prev, { role: 'bot', text: '' }]);
 
-    // Live backend on Hugging Face
-    const API_URL = 'https://burair-ahmed-ai-book-with-rag-chatbot.hf.space';
+    // Use configurable backend URL
+    const API_URL = process.env.BACKEND_URL || 'https://burair-ahmed-ai-book-with-rag-chatbot.hf.space';
 
     try {
       const response = await fetch(`${API_URL}/api/chat`, {

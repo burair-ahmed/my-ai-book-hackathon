@@ -32,6 +32,7 @@ jobs:
         run: npm run build
         env:
           NEON_AUTH_URL: ${{ secrets.NEON_AUTH_URL }}
+          BACKEND_URL: ${{ secrets.BACKEND_URL }}
 
       - name: Validate content
         run: node scripts/validate-content.js

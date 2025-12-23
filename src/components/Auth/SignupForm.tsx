@@ -38,7 +38,8 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToSignin }) 
       if (authError) throw new Error(authError.message);
 
       // Save personalization profile
-      const profileResponse = await fetch('http://localhost:8000/api/profile', {
+      const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:7860';
+      const profileResponse = await fetch(`${BACKEND_URL}/api/profile/`, {
           method: 'POST',
           headers: { 
               'Content-Type': 'application/json',

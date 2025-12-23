@@ -16,9 +16,9 @@ const config: Config = {
   url: 'https://burair-ahmed.github.io',
   baseUrl: '/my-ai-book-hackathon/',
 
-  // Custom fields for accessing environment variables in frontend
   customFields: {
     neonAuthUrl: process.env.NEON_AUTH_URL,
+    backendUrl: process.env.BACKEND_URL,
   },
 
   plugins: [
@@ -28,6 +28,7 @@ const config: Config = {
         plugins: [
           new (require('webpack').DefinePlugin)({
             'process.env.NEON_AUTH_URL': JSON.stringify(process.env.NEON_AUTH_URL),
+            'process.env.BACKEND_URL': JSON.stringify(process.env.BACKEND_URL),
           }),
         ],
       }),
