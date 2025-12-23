@@ -13,20 +13,31 @@ const UserButton: React.FC = () => {
 
   const handleLogout = async () => {
     try {
+      // 1. First attempt a graceful sign out with better-auth
       await authClient.signOut({
         fetchOptions: {
           onSuccess: () => {
+            // 2. Clear all auth related items from local storage manually as a fallback
+            Object.keys(localStorage).forEach(key => {
+              if (key.includes('better-auth') || key.includes('auth')) {
+                localStorage.removeItem(key);
+              }
+            });
+            // 3. Force a hard redirect
             window.location.href = homeUrl;
           },
           onError: (ctx) => {
             console.error("Sign out failed:", ctx.error);
-            // Fallback redirect even on error to attempt clearing local state
+            // Even if it fails, clear and redirect to ensure local state is reset
+            localStorage.clear(); 
             window.location.href = homeUrl;
           }
         }
       });
     } catch (err) {
       console.error("Logout error:", err);
+      // Hard reset fallback
+      localStorage.clear();
       window.location.href = homeUrl;
     }
   };
