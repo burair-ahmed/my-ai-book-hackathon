@@ -58,7 +58,7 @@ async def chat(request: Request, chat_request: ChatRequest):
         history_context = "\n".join([f"{m['role'].upper()}: {m['text']}" for m in history[-5:]]) # Last 5 messages
         
         # Clean query: focus on core keywords and normalize terms
-        clean_query = re.sub(r"^(what is|tell me about|how to|can you explain|what's|explain|define|show me|find)\s+", "", request.message, flags=re.IGNORECASE)
+        clean_query = re.sub(r"^(what is|tell me about|how to|can you explain|what's|explain|define|show me|find)\s+", "", chat_request.message, flags=re.IGNORECASE)
         clean_query = re.sub(r"ROS(\d)", r"ROS \1", clean_query, flags=re.IGNORECASE)
         
         # 2. Generate embedding
@@ -78,7 +78,7 @@ async def chat(request: Request, chat_request: ChatRequest):
         context_text = "\n\n---\n\n".join(context_chunks)
         
         # 5. Build prompt
-        rag_prompt = f"Chat History:\n{history_context}\n\nNew Query: {request.message}"
+        rag_prompt = f"Chat History:\n{history_context}\n\nNew Query: {chat_request.message}"
         
         async def stream_generator():
             try:
@@ -91,7 +91,7 @@ async def chat(request: Request, chat_request: ChatRequest):
                     yield f"data: {json.dumps({'text': chunk})}\n\n"
                 
                 # Save to history once complete
-                session_storage.save_message(session_id, "user", request.message)
+                session_storage.save_message(session_id, "user", chat_request.message)
                 session_storage.save_message(session_id, "bot", full_response)
                 yield "data: [DONE]\n\n"
             except Exception as stream_e:
