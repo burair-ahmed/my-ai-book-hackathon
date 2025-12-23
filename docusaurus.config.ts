@@ -4,6 +4,9 @@ import type * as Preset from '@docusaurus/preset-classic';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
+// Load environment variables for local development
+require('dotenv').config();
+
 const config: Config = {
   title: 'Physical AI & Humanoid Robotics',
   tagline: 'From Digital Intelligence to Embodied Systems',
@@ -12,6 +15,24 @@ const config: Config = {
   // Set the production url of your site here
   url: 'https://burair-ahmed.github.io',
   baseUrl: '/my-ai-book-hackathon/',
+
+  // Custom fields for accessing environment variables in frontend
+  customFields: {
+    neonAuthUrl: process.env.NEON_AUTH_URL,
+  },
+
+  plugins: [
+     () => ({
+      name: 'custom-webpack-config',
+      configureWebpack: () => ({
+        plugins: [
+          new (require('webpack').DefinePlugin)({
+            'process.env.NEON_AUTH_URL': JSON.stringify(process.env.NEON_AUTH_URL),
+          }),
+        ],
+      }),
+    }),
+  ],
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.

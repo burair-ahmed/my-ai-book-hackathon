@@ -71,8 +71,8 @@ async def chat(request: Request, chat_request: ChatRequest):
         context_chunks = [r["text"] for r in search_results]
         sources = [r["metadata"].get("source", "Unknown") for r in search_results]
         
-        if request.selection:
-            context_chunks.insert(0, f"USER SELECTED TEXT: {request.selection}")
+        if chat_request.selection:
+            context_chunks.insert(0, f"USER SELECTED TEXT: {chat_request.selection}")
             sources.insert(0, "User Selection")
             
         context_text = "\n\n---\n\n".join(context_chunks)

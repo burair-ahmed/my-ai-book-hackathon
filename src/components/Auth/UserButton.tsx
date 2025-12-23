@@ -11,7 +11,7 @@ const UserButton: React.FC = () => {
 
   const handleLogout = async () => {
     await authClient.signOut();
-    window.location.reload(); // Force reload to clear state
+    window.location.href = '/'; // Redirect to home
   };
 
   return (
