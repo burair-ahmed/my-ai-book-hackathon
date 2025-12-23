@@ -27,13 +27,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const fetchSession = async () => {
     try {
+      console.log("Checking session...");
       const { data } = await authClient.getSession();
+      console.log("Session fetched:", !!data);
+      
       if (data) {
         setSession(data.session);
         setUser(data.user as User);
+        
         // Get JWT for backend verification
-        const { data: tokenData } = await authClient.token();
-        setToken(tokenData?.token || null);
+        try {
+          const { data: tokenData } = await authClient.token();
+          console.log("JWT fetched:", !!tokenData?.token);
+          setToken(tokenData?.token || null);
+        } catch (tokenErr) {
+          console.error("JWT fetch failed:", tokenErr);
+          setToken(null);
+        }
       } else {
         setSession(null);
         setUser(null);
