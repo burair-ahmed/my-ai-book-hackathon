@@ -12,8 +12,23 @@ const UserButton: React.FC = () => {
   const { data: session } = authClient.useSession();
 
   const handleLogout = async () => {
-    await authClient.signOut();
-    window.location.href = homeUrl; // Redirect to home using baseUrl
+    try {
+      await authClient.signOut({
+        fetchOptions: {
+          onSuccess: () => {
+            window.location.href = homeUrl;
+          },
+          onError: (ctx) => {
+            console.error("Sign out failed:", ctx.error);
+            // Fallback redirect even on error to attempt clearing local state
+            window.location.href = homeUrl;
+          }
+        }
+      });
+    } catch (err) {
+      console.error("Logout error:", err);
+      window.location.href = homeUrl;
+    }
   };
 
   return (
