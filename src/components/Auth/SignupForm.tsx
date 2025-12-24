@@ -42,22 +42,27 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToSignin }) 
       if (authError) throw new Error(authError.message);
       if (!data) throw new Error('Signup failed - no data returned');
 
-      console.log("[Signup] Account created, retrieving JWT for profile sync...");
+      console.log("[Signup] Account created, waiting for persistence...");
+      
+      // Small delay to ensure better-auth-react has written the token to localStorage
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       // Fetch signed JWT for backend verification
       let jwt = null;
       try {
-        const { data: tokenData } = await authClient.token();
+        console.log("[Signup] Attempting to retrieve token for sync...");
+        const { data: tokenData, error: tokenErr } = await authClient.token();
+        if (tokenErr) console.error("[Signup] Token error:", tokenErr);
         jwt = tokenData?.token;
       } catch (tokenErr) {
-        console.warn("[Signup] JWT retrieval failed (expected if cookies/headers are in flux):", tokenErr);
+        console.warn("[Signup] JWT retrieval failed during sync:", tokenErr);
       }
 
       // Save personalization profile - Use production URL exclusively
       const BACKEND_URL = 'https://burair-ahmed-ai-book-with-rag-chatbot.hf.space';
       if (jwt) {
-        console.log("[Signup] Syncing profile to backend...");
-        await fetch(`${BACKEND_URL}/api/profile/`, {
+        console.log("[Signup] Syncing profile to backend with token:", jwt.substring(0, 10) + "...");
+        const profileRes = await fetch(`${BACKEND_URL}/api/profile/`, {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
@@ -68,6 +73,9 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToSignin }) 
                 hardware_background: { platforms: hardware }
             })
         });
+        console.log("[Signup] Profile sync status:", profileRes.status);
+      } else {
+        console.warn("[Signup] No JWT found, profile sync skipped. Personalization will be manual.");
       }
 
       console.log("[Signup] Success, refreshing global state...");

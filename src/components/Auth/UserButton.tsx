@@ -6,39 +6,26 @@ import './Auth.css';
 const UserButton: React.FC = () => {
   const { user, logout, isLoading } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  // const [isDropdownOpen, setIsDropdownOpen] = useState(false); // This state is no longer needed
 
   if (isLoading) return <div className="user-button-loading">...</div>;
 
   if (user) {
     return (
-      <div className="user-profile-container">
-        <div 
-          className="user-avatar-trigger" 
-          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        >
-          {user.image ? (
-            <img src={user.image} alt={user.name} />
-          ) : (
-            <div className="avatar-placeholder">{user.name ? user.name[0].toUpperCase() : '?'}</div>
-          )}
-        </div>
-
-        {isDropdownOpen && (
-          <div className="user-dropdown-menu glassmorphism">
-            <div className="user-info">
-              <span className="user-name">{user.name}</span>
-              <span className="user-email">{user.email}</span>
-            </div>
-            <hr />
-            <button className="logout-btn" onClick={() => {
-              logout();
-              setIsDropdownOpen(false);
-            }}>
-              Sign Out
-            </button>
+      <div className="user-header-profile glassmorphism">
+        <div className="user-header-info">
+          <div className="header-avatar">
+            {user.image ? (
+              <img src={user.image} alt={user.name} />
+            ) : (
+              <div className="header-avatar-placeholder">{user.name ? user.name[0].toUpperCase() : '?'}</div>
+            )}
           </div>
-        )}
+          <span className="header-user-name">{user.name}</span>
+        </div>
+        <button className="header-logout-btn" onClick={logout}>
+          Sign Out
+        </button>
       </div>
     );
   }
