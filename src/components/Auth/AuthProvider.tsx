@@ -99,7 +99,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           localStorage.removeItem(key);
         }
       });
-      console.log("[Auth] Local session cleared");
+      console.log("[Auth] Local session cleared. Reloading page to finalize...");
+      window.location.reload();
     }
   };
 

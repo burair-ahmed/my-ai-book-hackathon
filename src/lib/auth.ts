@@ -4,42 +4,32 @@ import { jwtClient } from "better-auth/client/plugins"
 export const authClient = createAuthClient({
   baseURL: "https://ep-damp-fire-adc4z1rc.neonauth.c-2.us-east-1.aws.neon.tech/neondb/auth",
   fetchOptions: {
+    // Rely on standard cookies for the Auth server communication
     credentials: "include",
     onRequest: (context: any) => {
       const url = context.request?.url || context.url || "";
       const urlStr = url.toString();
       
-      // 1. Skip injection for bootstrap/handshake endpoints
-      if (
-        urlStr.includes("/sign-in") || 
-        urlStr.includes("/sign-up") || 
-        urlStr.includes("/social-login") ||
-        urlStr.includes("/callback")
-      ) {
-        return;
-      }
-
-      // 2. Determine which token to use based on the target URL
-      const isAuthRequest = urlStr.includes("neonauth.c-2.us-east-1.aws.neon.tech");
-      const sessionToken = typeof window !== "undefined" ? localStorage.getItem("better-auth.session_token") : null;
-      const signedJwt = typeof window !== "undefined" ? localStorage.getItem("better-auth.jwt") : null;
-
-      // For Auth endpoints, we must use the Opaque Session Token
-      // For our backend API, we use the Signed JWT
-      const token = isAuthRequest ? sessionToken : signedJwt;
+      // 1. Determine if this is our backend API vs the Neon Auth server
+      const isOurApi = urlStr.includes("hf.space/api");
       
-      if (token) {
-        const headers = context.headers || context.options?.headers || {};
-        const authHeader = `Bearer ${token}`;
-        
-        if (typeof headers.set === 'function') {
-          headers.set("Authorization", authHeader);
-        } else {
-          headers["Authorization"] = authHeader;
+      // 2. ONLY inject headers for our API. 
+      // Handshake and Session management with Neon is handled via cookies to avoid 403/CSRF conflicts.
+      if (isOurApi) {
+        const token = typeof window !== "undefined" ? localStorage.getItem("better-auth.jwt") : null;
+        if (token) {
+          const headers = context.headers || context.options?.headers || {};
+          const authHeader = `Bearer ${token}`;
+          
+          if (typeof headers.set === 'function') {
+            headers.set("Authorization", authHeader);
+          } else {
+            headers["Authorization"] = authHeader;
+          }
+          
+          if (context.headers) context.headers = headers;
+          if (context.options) context.options.headers = headers;
         }
-        
-        if (context.headers) context.headers = headers;
-        if (context.options) context.options.headers = headers;
       }
     },
   },
