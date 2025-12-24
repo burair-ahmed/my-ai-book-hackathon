@@ -40,16 +40,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         try {
           console.log("[Auth] Retrieving signed JWT...");
           const tokenRes = await authClient.token();
-          console.log("[Auth] getRawToken response:", tokenRes);
+          console.log("[Auth] Token Response:", tokenRes);
+          
           if (tokenRes.data?.token) {
             console.log("[Auth] JWT successfully retrieved");
             setToken(tokenRes.data.token);
+          } else if (tokenRes.error?.status === 401) {
+            console.warn("[Auth] Token retrieval unauthorized (401). This is expected if the session token is missing or invalid in cross-origin requests.");
+            setToken(null);
           } else {
-            console.warn("[Auth] No token returned from server");
+            console.warn("[Auth] No token returned or other error:", tokenRes.error);
             setToken(null);
           }
         } catch (tokenErr) {
-          console.error("[Auth] JWT retrieval failed:", tokenErr);
+          console.error("[Auth] Unexpected error during JWT retrieval:", tokenErr);
           setToken(null);
         }
       } else {

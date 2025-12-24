@@ -4,18 +4,23 @@ import { jwtClient } from "better-auth/client/plugins"
 export const authClient = createAuthClient({
   baseURL: "https://ep-damp-fire-adc4z1rc.neonauth.c-2.us-east-1.aws.neon.tech/neondb/auth",
   fetchOptions: {
-    // We omit credentials to rely solely on the Authorization header for production cross-origin stability
-    credentials: "omit",
-    onRequest: (request: any) => {
-      // Manually inject the session token into the request headers for internal better-auth calls
-      // This ensures /get-session and /token always have the necessary credentials in cross-origin environments
+    // We use "include" because the server supports credentials and it's required for consistent session management
+    credentials: "include",
+    onRequest: (context: any) => {
+      // Manual token fallback for third-party cookie blocked environments
       const token = typeof window !== "undefined" ? localStorage.getItem("better-auth.session_token") : null;
-      if (token && request.headers) {
-        if (typeof request.headers.set === 'function') {
-          request.headers.set("Authorization", `Bearer ${token}`);
+      if (token) {
+        // Try all possible places better-fetch/better-auth might store headers
+        const headers = context.headers || context.options?.headers || {};
+        if (typeof headers.set === 'function') {
+          headers.set("Authorization", `Bearer ${token}`);
         } else {
-          request.headers["Authorization"] = `Bearer ${token}`;
+          headers["Authorization"] = `Bearer ${token}`;
         }
+        
+        // Ensure the headers are back in the context
+        if (context.headers) context.headers = headers;
+        if (context.options) context.options.headers = headers;
       }
     },
   },

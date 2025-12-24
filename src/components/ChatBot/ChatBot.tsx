@@ -28,15 +28,18 @@ const ChatBot: React.FC = () => {
   }, [messages, isLoading]);
 
   const handleSend = async () => {
-    if (!input.trim() && !selection) return;
+    const safeInput = input || '';
+    const safeSelection = selection || '';
+    
+    if (!safeInput.trim() && !safeSelection) return;
 
-    const userMsg = input.trim() || `Explain this: ${selection.substring(0, 50)}...`;
+    const userMsg = safeInput.trim() || `Explain this: ${safeSelection.substring(0, 50)}...`;
     const newMessages: Message[] = [...messages, { role: 'user', text: userMsg }];
     setMessages(newMessages);
     setInput('');
     setIsLoading(true);
 
-    setMessages(prev => [...prev, { role: 'bot', text: '' }]);
+    setMessages(prev => [...(prev || []), { role: 'bot', text: '' }]);
 
     // Production backend URL
     const API_URL = 'https://burair-ahmed-ai-book-with-rag-chatbot.hf.space';
