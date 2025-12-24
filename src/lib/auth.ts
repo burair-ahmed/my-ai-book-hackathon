@@ -15,7 +15,6 @@ export const authClient = createAuthClient({
         urlStr.includes("/sign-in") || 
         urlStr.includes("/sign-up") || 
         urlStr.includes("/social-login") ||
-        urlStr.includes("/sign-out") ||
         urlStr.includes("/callback")
       ) {
         return;
