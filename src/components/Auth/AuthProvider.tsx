@@ -28,20 +28,22 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const fetchSession = async () => {
     try {
       console.log("[Auth] Checking session status...");
-      const { data } = await authClient.getSession();
+      const sessionRes = await authClient.getSession();
+      console.log("[Auth] getRawSession response:", sessionRes);
       
-      if (data) {
-        console.log("[Auth] Active session found for:", data.user.email);
-        setSession(data.session);
-        setUser(data.user as User);
+      if (sessionRes.data) {
+        console.log("[Auth] Active session found for:", sessionRes.data.user.email);
+        setSession(sessionRes.data.session);
+        setUser(sessionRes.data.user as User);
         
         // Fetch the signed JWT for backend verification
         try {
           console.log("[Auth] Retrieving signed JWT...");
-          const { data: tokenData } = await authClient.token();
-          if (tokenData?.token) {
+          const tokenRes = await authClient.token();
+          console.log("[Auth] getRawToken response:", tokenRes);
+          if (tokenRes.data?.token) {
             console.log("[Auth] JWT successfully retrieved");
-            setToken(tokenData.token);
+            setToken(tokenRes.data.token);
           } else {
             console.warn("[Auth] No token returned from server");
             setToken(null);
@@ -51,7 +53,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           setToken(null);
         }
       } else {
-        console.log("[Auth] No guest or active session");
+        console.log("[Auth] No guest or active session (Response data is null)");
         setSession(null);
         setUser(null);
         setToken(null);

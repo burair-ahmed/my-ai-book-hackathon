@@ -20,7 +20,7 @@ const UserButton: React.FC = () => {
           {user.image ? (
             <img src={user.image} alt={user.name} />
           ) : (
-            <div className="avatar-placeholder">{user.name[0].toUpperCase()}</div>
+            <div className="avatar-placeholder">{user.name ? user.name[0].toUpperCase() : '?'}</div>
           )}
         </div>
 
