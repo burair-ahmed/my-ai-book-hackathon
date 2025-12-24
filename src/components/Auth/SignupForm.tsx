@@ -9,6 +9,7 @@ interface SignupFormProps {
 }
 
 const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToSignin }) => {
+  const { refresh } = useAuth();
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -16,9 +17,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToSignin }) 
   const [software, setSoftware] = useState<string[]>([]);
   const [hardware, setHardware] = useState<string[]>([]);
   const [error, setError] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const { refresh } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleSelection = (item: string, list: string[], setList: (l: string[]) => void) => {
     if (list.includes(item)) {
@@ -28,103 +27,160 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToSignin }) 
     }
   };
 
-  const handleSignup = async () => {
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
     setError('');
-    setIsSubmitting(true);
+
     try {
-      console.log("[Signup] Attempting account creation for:", email);
-      const { data, error: authError } = await authClient.signUp.email({
+      console.log("[Signup] Attempting signup for:", email);
+      const res = await authClient.signUp.email({
         email,
         password,
         name,
       });
+      console.log("[Signup] Raw response:", res);
 
-      if (authError) throw new Error(authError.message);
-      if (!data) throw new Error('Signup failed - no data returned');
+      if (res.error) {
+        setError(res.error.message || 'Signup failed');
+      } else {
+        // Manual persistence logic: save the opaque session token and user profile
+        if (res.data?.token) {
+          localStorage.setItem("better-auth.session_token", res.data.token);
+          console.log("[Signup] Token manually saved to localStorage");
+        }
+        if (res.data?.user) {
+          localStorage.setItem("better-auth.user", JSON.stringify(res.data.user));
+          console.log("[Signup] User profile manually saved to localStorage");
+        }
 
-      console.log("[Signup] Account created, waiting for persistence...");
-      
-      // Small delay to ensure better-auth-react has written the token to localStorage
-      await new Promise(resolve => setTimeout(resolve, 500));
+        // Wait for session to be established
+        await new Promise(r => setTimeout(r, 800));
+        await refresh();
 
-      // Fetch signed JWT for backend verification
-      let jwt = null;
-      try {
-        console.log("[Signup] Attempting to retrieve token for sync...");
-        const { data: tokenData, error: tokenErr } = await authClient.token();
-        if (tokenErr) console.error("[Signup] Token error:", tokenErr);
-        jwt = tokenData?.token;
-      } catch (tokenErr) {
-        console.warn("[Signup] JWT retrieval failed during sync:", tokenErr);
-      }
-
-      // Save personalization profile - Use production URL exclusively
-      const BACKEND_URL = 'https://burair-ahmed-ai-book-with-rag-chatbot.hf.space';
-      if (jwt) {
-        console.log("[Signup] Syncing profile to backend with token:", jwt.substring(0, 10) + "...");
-        const profileRes = await fetch(`${BACKEND_URL}/api/profile/`, {
-            method: 'POST',
-            headers: { 
+        // Capture JWT directly from client and sync preferences to backend
+        try {
+          const { data: tokenData } = await authClient.token();
+          const jwt = tokenData?.token;
+          
+          if (jwt) {
+            console.log("[Auth] Syncing preferences with JWT:", jwt.substring(0, 10) + "...");
+            await fetch('https://burair-ahmed-ai-book-with-rag-chatbot.hf.space/api/profile/', {
+              method: 'POST',
+              headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${jwt}` 
-            },
-            body: JSON.stringify({
+                'Authorization': `Bearer ${jwt}`
+              },
+              body: JSON.stringify({
                 software_background: { languages: software },
                 hardware_background: { platforms: hardware }
-            })
-        });
-        console.log("[Signup] Profile sync status:", profileRes.status);
-      } else {
-        console.warn("[Signup] No JWT found, profile sync skipped. Personalization will be manual.");
+              })
+            });
+          }
+        } catch (syncErr) {
+          console.warn("[Auth] Preference sync failed:", syncErr);
+        }
+        onSuccess();
       }
-
-      console.log("[Signup] Success, refreshing global state...");
-      await refresh();
-      onSuccess();
-    } catch (err: any) {
-      console.error("[Signup] Process failed:", err.message);
-      setError(err.message);
+    } catch (err) {
+      console.error("[Auth] Signup error:", err);
+      setError('An unexpected error occurred during signup');
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="auth-form glassmorphism">
-      <h2>{step === 1 ? 'Join the Robotics Journey' : 'Tell us about yourself'}</h2>
-      
+      <h2>{step === 1 ? 'Join the Journey' : 'Personalize your Experience'}</h2>
       {error && <div className="error-message">{error}</div>}
-
-      {step === 1 && (
+      
+      {step === 1 ? (
+        <form onSubmit={(e) => { e.preventDefault(); setStep(2); }} className="form-step">
+          <input
+            type="text"
+            placeholder="Full Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+          <input
+            type="email"
+            placeholder="Email address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type="submit" disabled={!name || !email || !password}>
+            Next: Technical Background
+          </button>
+          <p style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.9rem' }}>
+            Already have an account?{' '}
+            <button 
+              type="button"
+              onClick={onSwitchToSignin}
+              style={{ background: 'none', border: 'none', color: '#6366f1', padding: 0, cursor: 'pointer' }}
+            >
+              Sign In
+            </button>
+          </p>
+        </form>
+      ) : (
         <div className="form-step">
-          <input type="text" placeholder="Full Name" value={name} onChange={e => setName(e.target.value)} />
-          <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-          <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
-          <button onClick={() => setStep(2)} disabled={!email || !password || !name}>Next: Personalize</button>
-          <p>Already have an account? <span onClick={onSwitchToSignin} className="link">Sign In</span></p>
-        </div>
-      )}
+          <div className="preference-section">
+            <p style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>Software Skills</p>
+            <div className="options">
+              {['Python', 'C++', 'Arduino IDE', 'ROS 2', 'Scratch'].map(s => (
+                <button 
+                  key={s} 
+                  type="button"
+                  className={software.includes(s) ? 'selected' : ''} 
+                  onClick={() => toggleSelection(s, software, setSoftware)}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
 
-      {step === 2 && (
-        <div className="form-step">
-          <h3>Software Interest</h3>
-          <div className="options">
-            {['Python', 'C++', 'Arduino IDE', 'ROS 2', 'Scratch'].map(s => (
-              <button key={s} className={software.includes(s) ? 'selected' : ''} onClick={() => toggleSelection(s, software, setSoftware)}>{s}</button>
-            ))}
-          </div>
-          
-          <h3>Hardware Interest</h3>
-          <div className="options">
-            {['Arduino', 'Raspberry Pi', 'Jetson Nano', 'LEGO Mindstorms', 'Custom PCB'].map(h => (
-              <button key={h} className={hardware.includes(h) ? 'selected' : ''} onClick={() => toggleSelection(h, hardware, setHardware)}>{h}</button>
-            ))}
+            <p style={{ fontSize: '0.9rem', margin: '1rem 0 0.5rem' }}>Hardware Skills</p>
+            <div className="options">
+              {['Arduino', 'Raspberry Pi', 'Jetson Nano', 'LEGO', 'Custom PCB'].map(h => (
+                <button 
+                  key={h} 
+                  type="button"
+                  className={hardware.includes(h) ? 'selected' : ''} 
+                  onClick={() => toggleSelection(h, hardware, setHardware)}
+                >
+                  {h}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <div className="button-group">
-            <button className="secondary" onClick={() => setStep(1)} disabled={isSubmitting}>Back</button>
-            <button onClick={handleSignup} disabled={isSubmitting}>
-              {isSubmitting ? 'Finalizing...' : 'Complete Signup'}
+          <div className="button-group" style={{ display: 'flex', gap: '10px', marginTop: '1.5rem' }}>
+            <button 
+              type="button" 
+              className="secondary" 
+              onClick={() => setStep(1)} 
+              disabled={isLoading}
+              style={{ flex: 1, background: 'rgba(255,255,255,0.1)' }}
+            >
+              Back
+            </button>
+            <button 
+              type="button" 
+              onClick={handleSignup} 
+              disabled={isLoading}
+              style={{ flex: 2 }}
+            >
+              {isLoading ? 'Finalizing...' : 'Complete Signup'}
             </button>
           </div>
         </div>

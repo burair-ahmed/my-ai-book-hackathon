@@ -27,49 +27,53 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const fetchSession = async () => {
     try {
-      console.log("[Auth] Current Storage Keys:", Object.keys(localStorage));
-      console.log("[Auth] Checking session status...");
+      console.log("[Auth] Syncing session state...");
+      console.log("[Auth] LocalStorage Keys:", Object.keys(localStorage));
       const sessionRes = await authClient.getSession();
-      console.log("[Auth] getRawSession response:", sessionRes);
+      console.log("[Auth] getSession raw response:", sessionRes); // Added log for raw response
       
       if (sessionRes.data) {
-        console.log("[Auth] Active session found for:", sessionRes.data.user.email);
+        console.log("[Auth] Active session user:", sessionRes.data.user.email);
         setSession(sessionRes.data.session);
         setUser(sessionRes.data.user as User);
         
-        // Fetch the signed JWT for backend verification
         try {
-          console.log("[Auth] Retrieving signed JWT...");
           const tokenRes = await authClient.token();
-          console.log("[Auth] Token Response:", tokenRes);
-          
           if (tokenRes.data?.token) {
-            console.log("[Auth] JWT successfully retrieved and persisted to localStorage");
             setToken(tokenRes.data.token);
             localStorage.setItem("better-auth.jwt", tokenRes.data.token);
-          } else if (tokenRes.error?.status === 401) {
-            console.warn("[Auth] Token unauthorized - clearing local cache");
-            setToken(null);
-            localStorage.removeItem("better-auth.jwt");
-          } else {
-            console.warn("[Auth] No token returned:", tokenRes.error);
-            setToken(null);
           }
-        } catch (tokenErr) {
-          console.error("[Auth] Unexpected error during JWT retrieval:", tokenErr);
-          setToken(null);
+        } catch (e) {
+          console.warn("[Auth] Could not retrieve JWT:", e);
         }
       } else {
-        console.log("[Auth] No guest or active session (Response data is null)");
-        setSession(null);
-        setUser(null);
-        setToken(null);
+        console.log("[Auth] No session found, checking local hydration...");
+        const localUserStr = localStorage.getItem("better-auth.user");
+        const sessionToken = localStorage.getItem("better-auth.session_token");
+        
+        if (localUserStr && sessionToken) {
+          try {
+            const localUser = JSON.parse(localUserStr);
+            console.log("[Auth] Rehydrated user from local storage:", localUser.email);
+            setUser(localUser);
+            setSession({ token: sessionToken, userId: localUser.id });
+            
+            const localJwt = localStorage.getItem("better-auth.jwt");
+            if (localJwt) setToken(localJwt);
+          } catch (e) {
+            console.error("[Auth] Rehydration failed:", e);
+            setUser(null);
+            setSession(null);
+          }
+        } else {
+          console.log("[Auth] Guest mode active.");
+          setUser(null);
+          setSession(null);
+          setToken(null);
+        }
       }
     } catch (error) {
-      console.error("[Auth] Session sync error:", error);
-      setSession(null);
-      setUser(null);
-      setToken(null);
+      console.error("[Auth] Session fetch error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -80,33 +84,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   const logout = async () => {
-    console.log("[Auth] Initiating sign out...");
-    
-    // 1. Tentatively clear internal state to keep UI responsive
-    setUser(null);
-    setSession(null);
-    setToken(null);
-
+    console.log("[Auth] Logging out...");
     try {
-      // 2. Attempt server-side sign out
       await authClient.signOut();
-      console.log("[Auth] Server-side sign out successful");
-    } catch (error) {
-      console.warn("[Auth] Server-side sign out reached an error (common in cross-origin):", error);
+    } catch (e) {
+      console.warn("[Auth] Server sign-out error (expected in header-only mode):", e);
     } finally {
-      // 3. Force-clear all storage regardless of server response
+      // Nuking all local state and refreshing for a clean slate
       Object.keys(localStorage).forEach(key => {
         if (key.includes('better-auth')) {
           localStorage.removeItem(key);
         }
       });
-      console.log("[Auth] Total local purge complete. Reloading...");
       window.location.reload();
     }
   };
 
   const refresh = async () => {
-    console.log("[Auth] Refreshing state...");
     setIsLoading(true);
     await fetchSession();
   };

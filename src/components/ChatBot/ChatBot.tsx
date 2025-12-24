@@ -11,7 +11,6 @@ interface Message {
 }
 
 const ChatBot: React.FC = () => {
-  const { token, user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -48,10 +47,6 @@ const ChatBot: React.FC = () => {
       const headers: Record<string, string> = {
         'Content-Type': 'application/json'
       };
-      
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
 
       const response = await fetch(`${API_URL}/api/chat`, {
         method: 'POST',

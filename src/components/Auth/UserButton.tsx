@@ -6,7 +6,6 @@ import './Auth.css';
 const UserButton: React.FC = () => {
   const { user, logout, isLoading } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // const [isDropdownOpen, setIsDropdownOpen] = useState(false); // This state is no longer needed
 
   if (isLoading) return <div className="user-button-loading">...</div>;
 
