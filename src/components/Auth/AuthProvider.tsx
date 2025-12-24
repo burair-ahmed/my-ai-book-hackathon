@@ -79,22 +79,27 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   const logout = async () => {
+    console.log("[Auth] Initiating sign out...");
+    
+    // 1. Tentatively clear internal state to keep UI responsive
+    setUser(null);
+    setSession(null);
+    setToken(null);
+
     try {
-      console.log("[Auth] Logging out...");
+      // 2. Attempt server-side sign out
       await authClient.signOut();
-      setUser(null);
-      setSession(null);
-      setToken(null);
-      
-      // Clear persistence keys to ensure clean state
+      console.log("[Auth] Server-side sign out successful");
+    } catch (error) {
+      console.warn("[Auth] Server-side sign out reached an error (common in cross-origin):", error);
+    } finally {
+      // 3. Force-clear all storage regardless of server response
       Object.keys(localStorage).forEach(key => {
         if (key.includes('better-auth')) {
           localStorage.removeItem(key);
         }
       });
-      console.log("[Auth] Logout complete");
-    } catch (error) {
-      console.error("[Auth] Logout failed:", error);
+      console.log("[Auth] Local session cleared");
     }
   };
 

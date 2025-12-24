@@ -4,13 +4,12 @@ import { jwtClient } from "better-auth/client/plugins"
 export const authClient = createAuthClient({
   baseURL: "https://ep-damp-fire-adc4z1rc.neonauth.c-2.us-east-1.aws.neon.tech/neondb/auth",
   fetchOptions: {
-    // We use "include" to allow the browser to manage session cookies where possible
     credentials: "include",
     onRequest: (context: any) => {
       const url = context.request?.url || context.url || "";
       const urlStr = url.toString();
       
-      // Handshake endpoints should always be clean
+      // 1. Skip injection for bootstrap/handshake endpoints
       if (
         urlStr.includes("/sign-in") || 
         urlStr.includes("/sign-up") || 
@@ -20,15 +19,23 @@ export const authClient = createAuthClient({
         return;
       }
 
-      // If we have a stored JWT, inject it as a fallback for cross-origin/third-party blocked scenarios
-      const token = typeof window !== "undefined" ? localStorage.getItem("better-auth.jwt") : null;
+      // 2. Determine which token to use based on the target URL
+      const isAuthRequest = urlStr.includes("neonauth.c-2.us-east-1.aws.neon.tech");
+      const sessionToken = typeof window !== "undefined" ? localStorage.getItem("better-auth.session_token") : null;
+      const signedJwt = typeof window !== "undefined" ? localStorage.getItem("better-auth.jwt") : null;
+
+      // For Auth endpoints, we must use the Opaque Session Token
+      // For our backend API, we use the Signed JWT
+      const token = isAuthRequest ? sessionToken : signedJwt;
       
       if (token) {
         const headers = context.headers || context.options?.headers || {};
+        const authHeader = `Bearer ${token}`;
+        
         if (typeof headers.set === 'function') {
-          headers.set("Authorization", `Bearer ${token}`);
+          headers.set("Authorization", authHeader);
         } else {
-          headers["Authorization"] = `Bearer ${token}`;
+          headers["Authorization"] = authHeader;
         }
         
         if (context.headers) context.headers = headers;
@@ -40,7 +47,6 @@ export const authClient = createAuthClient({
     jwtClient(),
   ],
   auth: {
-    // This persists the session metadata, but we manually persist the JWT for the header fallback
     persistSession: true,
     storagePrefix: "better-auth",
   }
