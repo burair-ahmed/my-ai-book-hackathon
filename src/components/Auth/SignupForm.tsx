@@ -32,6 +32,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToSignin }) 
     setError('');
     setIsSubmitting(true);
     try {
+      console.log("[Signup] Attempting account creation for:", email);
       const { data, error: authError } = await authClient.signUp.email({
         email,
         password,
@@ -39,25 +40,24 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToSignin }) 
       });
 
       if (authError) throw new Error(authError.message);
-      if (!data) throw new Error('Signup failed');
+      if (!data) throw new Error('Signup failed - no data returned');
 
-      console.log("[Signup] Account created, fetching JWT...");
+      console.log("[Signup] Account created, retrieving JWT for profile sync...");
 
       // Fetch signed JWT for backend verification
       let jwt = null;
       try {
         const { data: tokenData } = await authClient.token();
         jwt = tokenData?.token;
-        console.log("[Signup] JWT retrieved:", !!jwt);
       } catch (tokenErr) {
-        console.error("[Signup] JWT retrieval failed (expected if cookies blocked):", tokenErr);
+        console.warn("[Signup] JWT retrieval failed (expected if cookies/headers are in flux):", tokenErr);
       }
 
       // Save personalization profile - Use production URL exclusively
       const BACKEND_URL = 'https://burair-ahmed-ai-book-with-rag-chatbot.hf.space';
       if (jwt) {
-        console.log("[Signup] Sending profile to backend...");
-        const profileResponse = await fetch(`${BACKEND_URL}/api/profile/`, {
+        console.log("[Signup] Syncing profile to backend...");
+        await fetch(`${BACKEND_URL}/api/profile/`, {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
@@ -68,21 +68,13 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToSignin }) 
                 hardware_background: { platforms: hardware }
             })
         });
-
-        if (!profileResponse.ok) {
-          console.error("[Signup] Profile creation failed:", await profileResponse.text());
-        } else {
-          console.log("[Signup] Profile created successfully");
-        }
-      } else {
-        console.warn("[Signup] Skipping profile creation due to missing JWT. User will need to personalize later.");
       }
 
-      // Update global auth state immediately
-      console.log("[Signup] Refreshing AuthProvider state...");
+      console.log("[Signup] Success, refreshing global state...");
       await refresh();
       onSuccess();
     } catch (err: any) {
+      console.error("[Signup] Process failed:", err.message);
       setError(err.message);
     } finally {
       setIsSubmitting(false);
@@ -122,9 +114,9 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToSignin }) 
           </div>
 
           <div className="button-group">
-            <button className="secondary" onClick={() => setStep(1)}>Back</button>
+            <button className="secondary" onClick={() => setStep(1)} disabled={isSubmitting}>Back</button>
             <button onClick={handleSignup} disabled={isSubmitting}>
-              {isSubmitting ? 'Creating Account...' : 'Complete Signup'}
+              {isSubmitting ? 'Finalizing...' : 'Complete Signup'}
             </button>
           </div>
         </div>

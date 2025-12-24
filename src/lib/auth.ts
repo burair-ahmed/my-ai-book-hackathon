@@ -4,16 +4,16 @@ import { jwtClient } from "better-auth/client/plugins"
 export const authClient = createAuthClient({
   baseURL: "https://ep-damp-fire-adc4z1rc.neonauth.c-2.us-east-1.aws.neon.tech/neondb/auth",
   fetchOptions: {
-    // Instead of cookies, we will rely on manual header injection if needed
-    // or Better Auth's internal handling of localStorage for tokens
-    credentials: "omit", 
+    // We omit credentials to rely solely on the Authorization header for production cross-origin stability
+    credentials: "omit",
   },
   plugins: [
     jwtClient(),
   ],
-  // Explicitly tell the client to use headers for cross-origin reliability
+  // Force session persistence into localStorage and instruct the client to use headers
   auth: {
     persistSession: true,
     storagePrefix: "better-auth",
+    // We'll manually handle the Authorization header in a custom fetch wrapper or within AuthProvider
   }
 })

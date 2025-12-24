@@ -1,39 +1,55 @@
-import React, { useState, useEffect } from 'react';
-import { authClient } from '../../lib/auth';
+import React, { useState } from 'react';
 import { useAuth } from './AuthProvider';
 import AuthModal from './AuthModal';
-import useBaseUrl from '@docusaurus/useBaseUrl';
 import './Auth.css';
 
 const UserButton: React.FC = () => {
+  const { user, logout, isLoading } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const homeUrl = useBaseUrl('/');
-  
-  // Consume the centralized AuthContext
-  const { user, logout } = useAuth();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const handleLogout = async () => {
-    await logout();
-    // No need for manual clear here as AuthProvider handles it
-    window.location.href = homeUrl;
-  };
+  if (isLoading) return <div className="user-button-loading">...</div>;
+
+  if (user) {
+    return (
+      <div className="user-profile-container">
+        <div 
+          className="user-avatar-trigger" 
+          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+        >
+          {user.image ? (
+            <img src={user.image} alt={user.name} />
+          ) : (
+            <div className="avatar-placeholder">{user.name[0].toUpperCase()}</div>
+          )}
+        </div>
+
+        {isDropdownOpen && (
+          <div className="user-dropdown-menu glassmorphism">
+            <div className="user-info">
+              <span className="user-name">{user.name}</span>
+              <span className="user-email">{user.email}</span>
+            </div>
+            <hr />
+            <button className="logout-btn" onClick={() => {
+              logout();
+              setIsDropdownOpen(false);
+            }}>
+              Sign Out
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
-    <div className="user-auth-container">
-      {user ? (
-        <div className="user-logged-in">
-          <span className="user-name">{user.name}</span>
-          <button className="logout-btn" onClick={handleLogout}>Logout</button>
-        </div>
-      ) : (
-        <button className="login-btn" onClick={() => setIsModalOpen(true)}>Sign In</button>
-      )}
-      
-      <AuthModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-      />
-    </div>
+    <>
+      <button className="signin-trigger-btn" onClick={() => setIsModalOpen(true)}>
+        Sign In
+      </button>
+      <AuthModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </>
   );
 };
 

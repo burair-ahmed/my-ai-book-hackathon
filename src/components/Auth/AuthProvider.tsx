@@ -27,37 +27,37 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const fetchSession = async () => {
     try {
-      console.log("[Auth] Checking session...");
+      console.log("[Auth] Checking session status...");
       const { data } = await authClient.getSession();
-      console.log("[Auth] getSession response:", data ? "User found" : "No user");
       
       if (data) {
+        console.log("[Auth] Active session found for:", data.user.email);
         setSession(data.session);
         setUser(data.user as User);
         
-        // Significant: better-auth uses the session cookie/header to issue a JWT via .token()
+        // Fetch the signed JWT for backend verification
         try {
-          console.log("[Auth] Requesting signed JWT...");
+          console.log("[Auth] Retrieving signed JWT...");
           const { data: tokenData } = await authClient.token();
           if (tokenData?.token) {
             console.log("[Auth] JWT successfully retrieved");
             setToken(tokenData.token);
           } else {
-            console.warn("[Auth] No token returned from /auth/token");
+            console.warn("[Auth] No token returned from server");
             setToken(null);
           }
         } catch (tokenErr) {
-          console.error("[Auth] Failed to fetch JWT (likely cross-origin/401):", tokenErr);
+          console.error("[Auth] JWT retrieval failed:", tokenErr);
           setToken(null);
         }
       } else {
-        console.log("[Auth] No active session found");
+        console.log("[Auth] No guest or active session");
         setSession(null);
         setUser(null);
         setToken(null);
       }
     } catch (error) {
-      console.error("[Auth] Critical error during session sync:", error);
+      console.error("[Auth] Session sync error:", error);
       setSession(null);
       setUser(null);
       setToken(null);
@@ -72,22 +72,26 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const logout = async () => {
     try {
+      console.log("[Auth] Logging out...");
       await authClient.signOut();
       setUser(null);
       setSession(null);
       setToken(null);
-      // Manually clear storage just in case Better Auth misses something
+      
+      // Clear persistence keys to ensure clean state
       Object.keys(localStorage).forEach(key => {
         if (key.includes('better-auth')) {
           localStorage.removeItem(key);
         }
       });
+      console.log("[Auth] Logout complete");
     } catch (error) {
-      console.error("Logout error:", error);
+      console.error("[Auth] Logout failed:", error);
     }
   };
 
   const refresh = async () => {
+    console.log("[Auth] Refreshing state...");
     setIsLoading(true);
     await fetchSession();
   };

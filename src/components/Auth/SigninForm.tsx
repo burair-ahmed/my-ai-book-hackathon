@@ -20,6 +20,7 @@ const SigninForm: React.FC<SigninFormProps> = ({ onSuccess, onSwitchToSignup }) 
     setError('');
     setIsSubmitting(true);
     try {
+      console.log("[Signin] Attempting login for:", email);
       const { error: authError } = await authClient.signIn.email({
         email,
         password,
@@ -27,10 +28,12 @@ const SigninForm: React.FC<SigninFormProps> = ({ onSuccess, onSwitchToSignup }) 
 
       if (authError) throw new Error(authError.message);
       
+      console.log("[Signin] Login successful, refreshing state...");
       // Update global auth state immediately
       await refresh();
       onSuccess();
     } catch (err: any) {
+      console.error("[Signin] Login failed:", err.message);
       setError(err.message);
     } finally {
       setIsSubmitting(false);
@@ -44,8 +47,20 @@ const SigninForm: React.FC<SigninFormProps> = ({ onSuccess, onSwitchToSignup }) 
       {error && <div className="error-message">{error}</div>}
 
       <div className="form-step">
-        <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-        <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+        <input 
+          type="email" 
+          placeholder="Email" 
+          value={email} 
+          onChange={e => setEmail(e.target.value)} 
+          disabled={isSubmitting}
+        />
+        <input 
+          type="password" 
+          placeholder="Password" 
+          value={password} 
+          onChange={e => setPassword(e.target.value)} 
+          disabled={isSubmitting}
+        />
         <button onClick={handleSignin} disabled={isSubmitting || !email || !password}>
           {isSubmitting ? 'Signing In...' : 'Sign In'}
         </button>
