@@ -12,18 +12,18 @@ const UserButton: React.FC = () => {
 
   if (user) {
     return (
-      <div className="user-header-profile glassmorphism">
-        <div className="user-header-info">
-          <div className="header-avatar">
+      <div className="user-header-row glassmorphism">
+        <div className="header-user-info">
+          <div className="header-avatar-small">
             {user.image ? (
               <img src={user.image} alt={user.name} />
             ) : (
               <div className="header-avatar-placeholder">{user.name ? user.name[0].toUpperCase() : '?'}</div>
             )}
           </div>
-          <span className="header-user-name">{user.name}</span>
+          <span className="header-display-name">{user.name}</span>
         </div>
-        <button className="header-logout-btn" onClick={logout}>
+        <button className="header-direct-logout" onClick={() => logout()}>
           Sign Out
         </button>
       </div>

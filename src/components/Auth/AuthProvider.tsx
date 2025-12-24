@@ -43,13 +43,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           console.log("[Auth] Token Response:", tokenRes);
           
           if (tokenRes.data?.token) {
-            console.log("[Auth] JWT successfully retrieved");
+            console.log("[Auth] JWT successfully retrieved and persisted to localStorage");
             setToken(tokenRes.data.token);
+            localStorage.setItem("better-auth.jwt", tokenRes.data.token);
           } else if (tokenRes.error?.status === 401) {
-            console.warn("[Auth] Token retrieval unauthorized (401). This is expected if the session token is missing or invalid in cross-origin requests.");
+            console.warn("[Auth] Token unauthorized - clearing local cache");
             setToken(null);
+            localStorage.removeItem("better-auth.jwt");
           } else {
-            console.warn("[Auth] No token returned or other error:", tokenRes.error);
+            console.warn("[Auth] No token returned:", tokenRes.error);
             setToken(null);
           }
         } catch (tokenErr) {
