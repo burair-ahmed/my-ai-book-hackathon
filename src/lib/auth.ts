@@ -4,32 +4,46 @@ import { jwtClient } from "better-auth/client/plugins"
 export const authClient = createAuthClient({
   baseURL: "https://ep-damp-fire-adc4z1rc.neonauth.c-2.us-east-1.aws.neon.tech/neondb/auth",
   fetchOptions: {
-    // Rely on standard cookies for the Auth server communication
-    credentials: "include",
+    // We strictly use "omit" to bypass standard cookie behavior.
+    // This solves the 403 Forbidden on logout and the "ghost login" on refresh.
+    credentials: "omit",
     onRequest: (context: any) => {
       const url = context.request?.url || context.url || "";
       const urlStr = url.toString();
       
-      // 1. Determine if this is our backend API vs the Neon Auth server
-      const isOurApi = urlStr.includes("hf.space/api");
+      // Handshake endpoints (login/signup) must stay clean
+      if (
+        urlStr.includes("/sign-in") || 
+        urlStr.includes("/sign-up") || 
+        urlStr.includes("/social-login") ||
+        urlStr.includes("/callback")
+      ) {
+        return;
+      }
+
+      // Determine the target and retrieve the appropriate token
+      const isAuthServer = urlStr.includes("neonauth.c-2.us-east-1.aws.neon.tech");
       
-      // 2. ONLY inject headers for our API. 
-      // Handshake and Session management with Neon is handled via cookies to avoid 403/CSRF conflicts.
-      if (isOurApi) {
-        const token = typeof window !== "undefined" ? localStorage.getItem("better-auth.jwt") : null;
-        if (token) {
-          const headers = context.headers || context.options?.headers || {};
-          const authHeader = `Bearer ${token}`;
-          
-          if (typeof headers.set === 'function') {
-            headers.set("Authorization", authHeader);
-          } else {
-            headers["Authorization"] = authHeader;
-          }
-          
-          if (context.headers) context.headers = headers;
-          if (context.options) context.options.headers = headers;
+      // Opaque session token for the Auth server
+      const sessionToken = typeof window !== "undefined" ? localStorage.getItem("better-auth.session_token") : null;
+      // Signed JWT for our backend API
+      const signedJwt = typeof window !== "undefined" ? localStorage.getItem("better-auth.jwt") : null;
+
+      const token = isAuthServer ? sessionToken : signedJwt;
+      
+      if (token) {
+        const headers = context.headers || context.options?.headers || {};
+        const authHeader = `Bearer ${token}`;
+        
+        if (typeof headers.set === 'function') {
+          headers.set("Authorization", authHeader);
+        } else {
+          headers["Authorization"] = authHeader;
         }
+        
+        // Push headers back into context
+        if (context.headers) context.headers = headers;
+        if (context.options) context.options.headers = headers;
       }
     },
   },
