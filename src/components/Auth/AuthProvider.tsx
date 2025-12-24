@@ -27,6 +27,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const fetchSession = async () => {
     try {
+      console.log("[Auth] Current Storage Keys:", Object.keys(localStorage));
       console.log("[Auth] Checking session status...");
       const sessionRes = await authClient.getSession();
       console.log("[Auth] getRawSession response:", sessionRes);

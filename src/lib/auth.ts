@@ -4,14 +4,14 @@ import { jwtClient } from "better-auth/client/plugins"
 export const authClient = createAuthClient({
   baseURL: "https://ep-damp-fire-adc4z1rc.neonauth.c-2.us-east-1.aws.neon.tech/neondb/auth",
   fetchOptions: {
-    // We strictly use "omit" to bypass standard cookie behavior.
-    // This solves the 403 Forbidden on logout and the "ghost login" on refresh.
+    // We ignore cookies entirely to fix the "ghost login" and cross-origin 403 issues.
+    // Auth is now purely driven by the Authorization header.
     credentials: "omit",
     onRequest: (context: any) => {
       const url = context.request?.url || context.url || "";
       const urlStr = url.toString();
       
-      // Handshake endpoints (login/signup) must stay clean
+      // Skip for primary handshake/bootstrap requests
       if (
         urlStr.includes("/sign-in") || 
         urlStr.includes("/sign-up") || 
@@ -21,14 +21,13 @@ export const authClient = createAuthClient({
         return;
       }
 
-      // Determine the target and retrieve the appropriate token
       const isAuthServer = urlStr.includes("neonauth.c-2.us-east-1.aws.neon.tech");
       
-      // Opaque session token for the Auth server
+      // Retrieve both tokens from storage
       const sessionToken = typeof window !== "undefined" ? localStorage.getItem("better-auth.session_token") : null;
-      // Signed JWT for our backend API
       const signedJwt = typeof window !== "undefined" ? localStorage.getItem("better-auth.jwt") : null;
 
+      // Swap token based on target: Session Token for Neon, Signed JWT for Backend
       const token = isAuthServer ? sessionToken : signedJwt;
       
       if (token) {
@@ -41,7 +40,6 @@ export const authClient = createAuthClient({
           headers["Authorization"] = authHeader;
         }
         
-        // Push headers back into context
         if (context.headers) context.headers = headers;
         if (context.options) context.options.headers = headers;
       }
@@ -53,5 +51,15 @@ export const authClient = createAuthClient({
   auth: {
     persistSession: true,
     storagePrefix: "better-auth",
+    // EXPLICIT STORAGE: This forces the session_token into localStorage instead of cookies.
+    storage: {
+      getItem: (key: string) => typeof window !== "undefined" ? localStorage.getItem(key) : null,
+      setItem: (key: string, value: string) => {
+        if (typeof window !== "undefined") localStorage.setItem(key, value);
+      },
+      removeItem: (key: string) => {
+        if (typeof window !== "undefined") localStorage.removeItem(key);
+      },
+    }
   }
 })
