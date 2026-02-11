@@ -2,6 +2,10 @@
 
 > **Bridging the gap between static textbooks and interactive AI tutoring.**
 
+[![Spec-Driven](https://img.shields.io/badge/Architecture-Spec--Driven-blueviolet)](/specs/)
+[![AI-Powered](https://img.shields.io/badge/AI--Powered-Gemini%20%2B%20RAG-orange)](#-key-features)
+[![Cloud-Native](https://img.shields.io/badge/Cloud--Native-Docker%20Ready-blue)](#-tech-stack)
+
 ## 📖 Introduction
 
 This project is not just a digital book; it is an **interactive learning platform** designed to teach "Physical AI & Humanoid Robotics". Unlike traditional static documentation, this platform integrates a **Retrieval-Augmented Generation (RAG)** chatbot that acts as a personalized tutor.
@@ -30,7 +34,33 @@ By combining the structured knowledge of a textbook with the adaptive intelligen
 
 ## 🏗️ Architecture Overview
 
-The system is designed as a decoupled architecture to ensure scalability and maintainability.
+The system utilizes a decoupled, event-driven architecture designed for high scalability and separation of concerns.
+
+```mermaid
+graph TD
+    User[👤 User] -->|Browses Content| Frontend[⚛️ Docusaurus Frontend]
+    User -->|Asks Question| ChatUI[💬 Chat Interface]
+    
+    subgraph "Backend Services (FastAPI)"
+        ChatUI -->|POST /api/chat| API[🚀 API Gateway]
+        API -->|1. Generate Embedding| Gemini[🧠 Google Gemini API]
+        API -->|2. Semantic Search| VectorDB[(🔍 Qdrant Vector Store)]
+        API -->|3. Get User Profile| DB[(🐘 Neon PostgreSQL)]
+        
+        VectorDB -->|Context Chunks| API
+        DB -->|Personalization Data| API
+        
+        API -->|4. Generate Response w/ Context| Gemini
+    end
+    
+    Gemini -->|Streaming Response| ChatUI
+    
+    style Frontend fill:#61dafb,stroke:#333,stroke-width:2px,color:black
+    style API fill:#009688,stroke:#333,stroke-width:2px,color:white
+    style Gemini fill:#4285f4,stroke:#333,stroke-width:2px,color:white
+    style VectorDB fill:#d91848,stroke:#333,stroke-width:2px,color:white
+    style DB fill:#00a3e0,stroke:#333,stroke-width:2px,color:white
+```
 
 -   **Frontend**: Docusaurus serves the static content (markdown files in `docs/`). It communicates with the backend via API calls for dynamic features (Chat, Profile).
 -   **Backend**: FastAPI exposes endpoints for:
